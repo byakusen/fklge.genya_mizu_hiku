@@ -143,6 +143,202 @@
   .ex .body p + p{margin-top:.55rem;}
   .ex .body em{font-style:normal; color:var(--syu); font-weight:700;}
 
+  /* ── しりょうタブ（うごく絵） ── */
+  main.solo{grid-template-columns:1fr;}
+  main.solo .board{display:none;}
+  .stage{
+    flex:1 1 auto; min-height:0; position:relative; overflow:hidden;
+    border:.16rem solid var(--line); border-radius:.7rem; background:#fbfcfd;
+  }
+  .stage img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:contain;
+    opacity:0; transition:opacity .9s ease;
+  }
+  .stage img.on{opacity:1; animation:kb 7s linear forwards;}
+  @keyframes kb{from{transform:scale(1);}to{transform:scale(1.03);}}
+  .mcap{
+    flex:0 0 auto; margin-top:.6rem; font-size:1.14rem; line-height:1.85;
+    color:var(--ai); font-weight:700;
+  }
+  .mcap.in{animation:capin .7s ease-out;}
+  @keyframes capin{from{opacity:0; transform:translateY(.4rem);}to{opacity:1; transform:none;}}
+  .mctl{flex:0 0 auto; display:flex; align-items:center; gap:.45rem; margin-top:.6rem;}
+  .mbtn{
+    background:#f2f7fa; border:.14rem solid var(--line); border-radius:999px;
+    padding:.24rem .95rem; color:#4a6b7d; font-weight:700; font-size:.95rem;
+  }
+  .mbtn.main{background:var(--ai); border-color:var(--ai); color:#fff; min-width:7.5rem;}
+  .mbtn:disabled{opacity:.35;}
+  .mdots{display:flex; gap:.3rem; margin-left:.5rem;}
+  .mdot{width:.62rem; height:.62rem; border-radius:50%; background:#d5e2ea;}
+  .mdot.on{background:var(--kin);}
+  .mstep{margin-left:auto; font-size:.9rem; color:#5c7b8d; font-weight:700;}
+
+  /* ── うごく絵（SVGアニメーション） ── */
+  .mv{width:100%; height:100%; display:block;}
+  .mv text{font-family:inherit; font-weight:700; fill:#2b2b2b;
+           paint-order:stroke; stroke:#fff; stroke-width:7; stroke-linejoin:round;}
+  .mv .lb{font-size:28px;}
+  .mv .rb{font-size:15px; stroke-width:5;}
+  .mv .fx{opacity:0;}
+  .mv-ash{transform-box:fill-box; transform-origin:bottom;}
+  .mv-lake{transform-box:view-box; transform-origin:500px 338px;}
+  .mv-drop{transform-box:fill-box; transform-origin:center;}
+  .mv.paused *{animation-play-state:paused !important;}
+
+  @keyframes mvFlow{to{stroke-dashoffset:-40;}}
+  @keyframes mvRise{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  @keyframes mvSpread{from{transform:scale(.02);}to{transform:scale(1);}}
+  @keyframes mvPop{from{opacity:0; transform:translateY(12px);}to{opacity:1; transform:none;}}
+  @keyframes mvGo{to{opacity:0;}}
+  @keyframes mvVeil{to{opacity:.92;}}
+  @keyframes mvShow{to{opacity:.9;}}
+  @keyframes mvDark{to{opacity:.24;}}
+  @keyframes mvHalf{to{opacity:.3;}}
+  @keyframes mvGlow{0%{opacity:.25;}100%{opacity:.95;}}
+  @keyframes mvCloud{from{opacity:0; transform:scale(.22);}to{opacity:.8; transform:scale(1);}}
+  @keyframes mvPuff{0%{opacity:0; transform:translate(0,0) scale(.35);}
+                    25%{opacity:.8;}
+                    100%{opacity:0; transform:translate(-30px,-132px) scale(1.8);}}
+  @keyframes mvFall{0%{opacity:0; transform:translate(0,0);}
+                    15%{opacity:.85;} 100%{opacity:0; transform:translate(18px,250px);}}
+  @keyframes mvEjA{0%{opacity:0; transform:translate(0,0) scale(1);}12%{opacity:1;}
+                   100%{opacity:0; transform:translate(-54px,-88px) scale(.35);}}
+  @keyframes mvEjB{0%{opacity:0; transform:translate(0,0) scale(1);}12%{opacity:1;}
+                   100%{opacity:0; transform:translate(6px,-126px) scale(.35);}}
+  @keyframes mvEjC{0%{opacity:0; transform:translate(0,0) scale(1);}12%{opacity:1;}
+                   100%{opacity:0; transform:translate(60px,-94px) scale(.35);}}
+  @keyframes mvFlood{from{opacity:0; transform:scale(.06);}
+                     35%{opacity:.95;}
+                     to{opacity:.95; transform:scale(1);}}
+  @keyframes mvCarve{to{transform:scaleX(.68);}}
+  @keyframes mvWave{from{transform:translateY(-56px); opacity:0;}
+                    30%{opacity:.7;} to{transform:translateY(56px); opacity:0;}}
+  @keyframes mvSettle{to{fill:#e9d2ac;}}
+  @keyframes mvSettle2{to{fill:#d6bd95;}}
+  @keyframes mvDraw{to{stroke-dashoffset:0;}}
+  @keyframes mvStone{from{opacity:0; transform:scale(.2);}to{opacity:1; transform:scale(1);}}
+  @keyframes mvDrop{0%{opacity:0; transform:translate(0,0) scale(1);}
+                    12%{opacity:.95;}
+                    28%{transform:translate(-7px,38px) scale(1);}
+                    50%{transform:translate(6px,72px) scale(.95);}
+                    72%{transform:translate(-5px,104px) scale(.9);}
+                    88%{opacity:.8;}
+                    100%{opacity:0; transform:translate(3px,146px) scale(.75);}}
+
+  /* ばめん1：湖のような土地 */
+  .mv.run .mv-flow  {animation:mvFlow 2.2s linear infinite calc(var(--t) + 0s);}
+  .mv.run .mv-lake  {animation:mvSpread 1.8s ease-out both calc(var(--t) + 1.2s);}
+  .mv.run .mv-cap1  {animation:mvPop .7s ease-out both calc(var(--t) + 2.8s),
+                               mvGo .5s ease-in forwards calc(var(--t) + 7.8s);}
+  /* ばめん2：ふん火して うめつくされる */
+  .mv.run .mv-crater{animation:mvVeil 1.2s ease-in both calc(var(--t) + 8.1s),
+                               mvHalf 1.6s ease-out forwards calc(var(--t) + 18s);}
+  .mv.run .mv-cap2a {animation:mvPop .7s ease-out both calc(var(--t) + 8.4s),
+                               mvGo .5s ease-in forwards calc(var(--t) + 16.9s);}
+  .mv.run .mv-glow  {animation:mvGlow 1.1s ease-in-out infinite alternate both calc(var(--t) + 8.3s),
+                               mvGo 1s ease-out forwards calc(var(--t) + 17s);}
+  .mv.run .mv-cloud {animation:mvCloud 4.6s ease-out both calc(var(--t) + 8.8s),
+                               mvGo 2.4s ease-in forwards calc(var(--t) + 17.3s);}
+  .mv.run .mv-dark  {animation:mvDark 3.4s ease-in-out both calc(var(--t) + 9s),
+                               mvGo 2.6s ease-in-out forwards calc(var(--t) + 17.4s);}
+  .mv.run .mv-plume {animation:mvPuff 2.6s ease-out infinite both,
+                               mvGo 1.2s ease-out forwards calc(var(--t) + 17.2s);}
+  .mv.run .mv-fall  {animation:mvFall 1.9s linear both 4;}
+  .mv.run .mv-ejA   {animation:mvEjA 1.7s ease-out both 3;}
+  .mv.run .mv-ejB   {animation:mvEjB 1.9s ease-out both 3;}
+  .mv.run .mv-ejC   {animation:mvEjC 1.8s ease-out both 3;}
+  .mv.run .mv-ash   {animation:mvRise 5.4s ease-in-out both calc(var(--t) + 9.8s),
+                               mvSettle 2.6s ease-in-out both calc(var(--t) + 19.4s);}
+  .mv.run .mv-veil  {animation:mvVeil 4.2s ease-in-out both calc(var(--t) + 10.4s),
+                               mvSettle2 2.4s ease-in-out both calc(var(--t) + 20s);}
+  .mv.run .mv-cap2b {animation:mvPop .7s ease-out both calc(var(--t) + 11.6s),
+                               mvGo .5s ease-in forwards calc(var(--t) + 16.9s);}
+  /* ばめん3：川のはんらんが けずり、石や砂がたまる（水は2回おしよせる） */
+  .mv.run .mv-st    {animation:mvStone .55s ease-out both;}          /* 水の下で ねている石 */
+  .mv.run .mv-st2   {animation:mvStone .55s ease-out both;}
+  .mv.run .mv-flood {animation:mvFlood 2.2s ease-out both calc(var(--t) + 18s),
+                               mvGo 1.8s ease-in forwards calc(var(--t) + 23s);}
+  .mv.run .mv-flood2{animation:mvFlood 2.2s ease-out both calc(var(--t) + 25.6s),
+                               mvGo 1.8s ease-in forwards calc(var(--t) + 29.4s);}
+  .mv.run .mv-wave  {animation:mvWave 2.6s linear infinite both;}
+  .mv.run .mv-cap3a {animation:mvPop .7s ease-out both calc(var(--t) + 20.4s),
+                               mvGo .5s ease-in forwards calc(var(--t) + 22.6s);}
+  .mv.run .mv-ch    {animation:mvDraw 1.7s ease-out both;}
+  .mv.run .mv-remain{animation:mvShow 1.6s ease-out both calc(var(--t) + 24.6s),
+                               mvCarve 2.2s ease-in-out both calc(var(--t) + 28.4s);}
+  .mv.run .mv-cap3b {animation:mvPop .7s ease-out both calc(var(--t) + 27.8s),
+                               mvGo .5s ease-in forwards calc(var(--t) + 29.2s);}
+  /* ばめん4：石ころだらけで 水がしみこみやすい */
+  .mv.run .mv-cap3  {animation:mvPop .8s ease-out both calc(var(--t) + 32.4s),
+                               mvGo .6s ease-in forwards calc(var(--t) + 36.2s);}
+  .mv.run .mv-zoom  {animation:mvPop .8s ease-out both calc(var(--t) + 36.8s);}
+  .mv.run .mv-drop  {animation:mvDrop 2.4s ease-in infinite both;}
+  .mv.run .mv-cap4  {animation:mvPop .8s ease-out both calc(var(--t) + 38s);}
+
+  /* ── しりょうタブ（media を持つタブ）だけ 色を変えて目立たせる ── */
+  .tab.shiryo{background:#fdf2dc; border-color:#e0a52c; color:#8a5a12;}
+  .tab.shiryo .no{background:#e0a52c;}
+  .tab.shiryo:hover,.tab.shiryo:focus-visible{border-color:#b8790c;}
+  .tab.shiryo.on{background:var(--paper); border-color:#b8790c; color:#8a5a12;
+                 box-shadow:0 0 0 .14rem rgba(224,165,44,.4);}
+  .tab.shiryo.on .no{background:#b8790c;}
+
+  /* ── うごく絵②「ずい道の中の石組みのくふう」（クラスは mz-）── */
+  .mv .mz-ti{font-size:26px;}
+  .mv .mz-sub{font-size:19px; fill:#1b4a68;}
+  .mv .mz-note{font-size:18px; fill:#1b4a68; stroke-width:5;}
+  .mv .mz-nm{font-size:19px;}
+  .mv .mz-sm{font-size:15px; fill:#42606f; stroke-width:5;}
+  .mv .mz-lg{font-size:16px; stroke-width:5;}
+  .mv .mz-msg{font-size:21px; fill:#a8261b;}
+  .mv .mz-msg2{font-size:21px; fill:#26654a;}
+  .mv .mz-bg{font-size:17px; fill:#fff; stroke:none;}
+  .mv .mz-rb{font-size:11px; font-weight:400; stroke-width:3.5;}
+  /* scale を使う要素の基準点（作業メモ §4-9・§7-⑤） */
+  .mz-dot{transform-box:fill-box; transform-origin:center;}
+  .mz-st {transform-box:fill-box; transform-origin:center;}
+
+  @keyframes mzFallDot{0%{opacity:0; transform:translate(0,0) scale(1);}
+                       18%{opacity:.95;}
+                       100%{opacity:0; transform:translate(4px,70px) scale(.6);}}
+
+  .mv.run .mz-sc   {animation:mvPop .6s ease-out both, mvGo .5s ease-in forwards;}
+  .mv.run .mz-pop  {animation:mvPop .7s ease-out both;}
+  .mv.run .mz-fall {animation:mvPop .5s ease-out both, mvGo .6s ease-in forwards;}
+  .mv.run .mz-st   {animation:mvStone .5s ease-out both;}
+  .mv.run .mz-dot  {animation:mzFallDot 1.9s ease-in infinite both;}
+  .mv.run .mz-arrow{animation:mvGlow .9s ease-in-out infinite alternate both;}
+
+  /* サブタブが3つ以上でもはみ出さないように */
+  .subtabs{flex-wrap:wrap;}
+  .st{flex:0 0 auto; white-space:nowrap;}
+
+  /* ── うごく絵③「ふせこしの工事の方法」（クラスは mf-）── */
+  .mv .mf-ti{font-size:26px;}
+  .mv .mf-nm{font-size:21px;}
+  .mv .mf-sm{font-size:18px; stroke-width:5;}
+  .mv .mf-sm2{font-size:16px; stroke-width:4.5;}
+  .mv .mf-sm3{font-size:17px; fill:#2c5e70; stroke-width:5;}
+  .mv .mf-lg{font-size:16px; stroke-width:5;}
+  .mv .mf-msg{font-size:20px; fill:#a8261b;}
+  .mv .mf-msg2{font-size:19px; fill:#1b4a68;}
+  .mv .mf-bg{font-size:22px; fill:#fff; stroke:none;}
+  .mv .mf-rb{font-size:11px; font-weight:400; stroke-width:3.5;}
+  /* scale を使うので基準点が要る（作業メモ §4-9・§7-⑤） */
+  .mf-blk{transform-box:fill-box; transform-origin:center;}
+
+  @keyframes mfSet{0%{opacity:0; transform:translateY(-30px) scale(.88);}
+                   55%{opacity:1;}
+                   100%{opacity:1; transform:none;}}
+
+  .mv.run .mf-sc  {animation:mvPop .6s ease-out both, mvGo .5s ease-in forwards;}
+  .mv.run .mf-pop {animation:mvPop .7s ease-out both;}
+  .mv.run .mf-gone{animation:mvPop .6s ease-out both, mvGo .6s ease-in forwards;}
+  .mv.run .mf-blk {animation:mfSet .55s ease-out both;}
+  .mv.run .mf-flow{animation:mvFlow 2.2s linear infinite;}
+  .mv.run .mf-wv  {animation:mvGlow 1.6s ease-in-out infinite alternate both;}
+
   /* もんだい */
   .subtabs{flex:0 0 auto; display:flex; gap:.4rem; margin-bottom:.5rem;}
   .st{
@@ -305,6 +501,19 @@
           <button class="again" id="again">もういちど</button>
           <button class="again miss" id="retry" hidden></button>
         </div>
+      </div>
+    </div>
+
+    <div class="view" id="vMovie">
+      <div class="subtabs" id="msubtabs"></div>
+      <div class="stage" id="stage"></div>
+      <p class="mcap" id="mcap"></p>
+      <div class="mctl">
+        <button class="mbtn" id="mprev">◀ もどる</button>
+        <button class="mbtn main" id="mplay">▶ さいせい</button>
+        <button class="mbtn" id="mnext">つぎ ▶</button>
+        <span class="mdots" id="mdots"></span>
+        <span class="mstep" id="mstep"></span>
       </div>
     </div>
   </section>
@@ -1143,6 +1352,289 @@ SECTIONS.push({
  ]
 });
 
+/* しりょうタブ：うごく絵（at＝アニメの何びょう目から、wait＝そのばめんの長さ） */
+const SVG_GENYA=`<svg class="mv" viewBox="0 0 1000 520" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+ <defs>
+  <linearGradient id="mvSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dceaf4"/><stop offset="1" stop-color="#f7fbfc"/></linearGradient>
+  <linearGradient id="mvGL" x1="0" y1="0" x2="1" y2="0.6"><stop offset="0" stop-color="#9ec07e"/><stop offset="1" stop-color="#dcebc8"/></linearGradient>
+  <linearGradient id="mvGR" x1="1" y1="0" x2="0" y2="0.6"><stop offset="0" stop-color="#9ec07e"/><stop offset="1" stop-color="#dcebc8"/></linearGradient>
+  <linearGradient id="mvCone" x1="0" y1="0" x2="1" y2="0.2"><stop offset="0" stop-color="#9fb489"/><stop offset="0.55" stop-color="#b6c9a0"/><stop offset="1" stop-color="#8ea37b"/></linearGradient>
+  <clipPath id="mvValley"><path d="M330,258 C348,288 306,386 268,520 L732,520 C694,386 652,288 670,258 Z"/><path d="M452,226 L548,226 L548,264 L452,264 Z"/></clipPath>
+  <clipPath id="mvBox"><rect x="42" y="340" width="288" height="124" rx="6"/></clipPath>
+ </defs>
+
+ <rect width="1000" height="520" fill="url(#mvSky)"/>
+
+ <path d="M0,208 C58,192 92,152 132,128 C170,106 198,140 238,122 C282,102 302,152 346,168 C392,184 422,142 472,134 C522,126 550,170 598,178 C650,186 678,134 728,118 C778,102 808,154 858,170 C902,184 948,152 1000,140 L1000,300 L0,300 Z" fill="#cfdee1"/>
+ <path d="M0,240 C70,226 112,186 162,170 C212,154 248,194 302,200 C358,206 388,170 442,162 C494,154 522,194 576,204 C630,214 662,174 714,162 C766,150 802,190 858,202 C906,212 956,190 1000,180 L1000,320 L0,320 Z" fill="#b5cccd"/>
+
+ <path d="M96,224 C134,186 170,132 198,80 L212,80 C240,132 276,186 314,224 Z" fill="url(#mvCone)"/>
+ <path d="M205,80 C232,132 276,186 314,224 L205,224 Z" fill="#7f9670" opacity=".35"/>
+ <path d="M199,92 C186,124 168,164 146,196" stroke="#879c74" stroke-width="3" fill="none" opacity=".55"/>
+ <path d="M212,94 C226,126 246,166 268,198" stroke="#879c74" stroke-width="3" fill="none" opacity=".45"/>
+ <ellipse cx="205" cy="81" rx="12" ry="4.5" fill="#6f7f63"/>
+ <path class="mv-crater fx" d="M96,224 C134,186 170,132 198,80 L212,80 C240,132 276,186 314,224 Z" fill="#8a6f52"/>
+ <path class="mv-crater fx" d="M205,80 C232,132 276,186 314,224 L205,224 Z" fill="#6f5941" style="animation-delay:calc(var(--t) + 8.3s), calc(var(--t) + 18s)"/>
+
+ <path d="M150,300 C222,214 292,192 358,212 C414,228 454,232 500,236 C546,232 586,228 642,212 C708,192 778,214 850,300 Z" fill="#bdd6a0"/>
+ <path d="M330,258 C348,288 306,386 268,520 L732,520 C694,386 652,288 670,258 Z" fill="#cfe1b2"/>
+
+ <path d="M497,240 C494,272 490,304 486,338 L514,338 C511,304 507,272 503,240 Z" fill="#9ed0ea"/>
+ <path class="mv-flow" d="M500,244 C497,276 495,306 492,334" stroke="#e2f3fc" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="10 22"/>
+
+ <path d="M500,330 C560,378 614,446 640,520 L360,520 C386,446 440,378 500,330 Z" fill="#e7d6b6"/>
+ <g class="mv-lake">
+  <path d="M500,342 C552,386 602,448 626,520 L374,520 C398,448 448,386 500,342 Z" fill="#a3d1ea"/>
+  <path d="M500,364 C544,402 588,454 608,508 L392,508 C412,454 456,402 500,364 Z" fill="#bde0f0" opacity=".6"/>
+ </g>
+
+ <path class="mv-ash" d="M330,258 C348,288 306,386 268,520 L732,520 C694,386 652,288 670,258 Z" fill="#a98a63"/>
+ <path class="mv-remain fx" style="transform-box:fill-box; transform-origin:left" d="M330,258 C348,288 306,386 268,520 L444,520 C452,392 420,300 396,258 Z" fill="#cdb894"/>
+ <path class="mv-ch" d="M500,340 C486,392 448,448 408,520" stroke="#9ed0ea" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="330" stroke-dashoffset="330" style="animation-delay:calc(var(--t) + 24.4s)"/>
+ <path class="mv-ch" d="M500,340 C506,394 506,458 506,520" stroke="#9ed0ea" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="330" stroke-dashoffset="330" style="animation-delay:calc(var(--t) + 24.8s)"/>
+ <path class="mv-ch" d="M500,340 C514,392 556,450 596,520" stroke="#9ed0ea" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="330" stroke-dashoffset="330" style="animation-delay:calc(var(--t) + 25.2s)"/>
+
+ <ellipse class="mv-st fx" cx="392" cy="458" rx="20" ry="14" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 20.0s)"/>
+ <ellipse class="mv-st fx" cx="436" cy="494" rx="15" ry="11" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 20.18s)"/>
+ <ellipse class="mv-st fx" cx="600" cy="474" rx="22" ry="15" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 20.36s)"/>
+ <ellipse class="mv-st fx" cx="652" cy="436" rx="16" ry="11" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 20.54s)"/>
+ <ellipse class="mv-st fx" cx="566" cy="508" rx="18" ry="12" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 20.72s)"/>
+ <ellipse class="mv-st fx" cx="688" cy="490" rx="14" ry="10" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 20.9s)"/>
+ <ellipse class="mv-st fx" cx="468" cy="504" rx="13" ry="9" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 21.08s)"/>
+ <ellipse class="mv-st fx" cx="548" cy="452" rx="17" ry="12" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 21.26s)"/>
+ <ellipse class="mv-st2 fx" cx="496" cy="462" rx="9.8" ry="6.6" fill="#948a7d" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 26.4s)"/>
+ <ellipse class="mv-st2 fx" cx="441" cy="480" rx="18.9" ry="13.4" fill="#7f776b" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 26.49s)"/>
+ <ellipse class="mv-st2 fx" cx="453" cy="402" rx="10.6" ry="6.8" fill="#a09585" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 26.58s)"/>
+ <ellipse class="mv-st2 fx" cx="526" cy="438" rx="16.2" ry="12.9" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 26.67s)"/>
+ <ellipse class="mv-st2 fx" cx="432" cy="472" rx="10.0" ry="6.3" fill="#948a7d" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 26.76s)"/>
+ <ellipse class="mv-st2 fx" cx="575" cy="400" rx="7.2" ry="5.5" fill="#7f776b" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 26.85s)"/>
+ <ellipse class="mv-st2 fx" cx="396" cy="405" rx="8.9" ry="6.4" fill="#a09585" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 26.94s)"/>
+ <ellipse class="mv-st2 fx" cx="399" cy="462" rx="8.6" ry="6.7" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.03s)"/>
+ <ellipse class="mv-st2 fx" cx="596" cy="508" rx="16.6" ry="11.7" fill="#948a7d" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.12s)"/>
+ <ellipse class="mv-st2 fx" cx="774" cy="498" rx="15.8" ry="11.4" fill="#7f776b" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.21s)"/>
+ <ellipse class="mv-st2 fx" cx="445" cy="434" rx="13.3" ry="9.2" fill="#a09585" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.3s)"/>
+ <ellipse class="mv-st2 fx" cx="732" cy="406" rx="12.7" ry="8.1" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.39s)"/>
+ <ellipse class="mv-st2 fx" cx="279" cy="461" rx="14.4" ry="10.3" fill="#948a7d" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.48s)"/>
+ <ellipse class="mv-st2 fx" cx="571" cy="508" rx="7.9" ry="5.2" fill="#7f776b" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.57s)"/>
+ <ellipse class="mv-st2 fx" cx="569" cy="431" rx="19.4" ry="14.1" fill="#a09585" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.66s)"/>
+ <ellipse class="mv-st2 fx" cx="295" cy="444" rx="13.3" ry="10.6" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.75s)"/>
+ <ellipse class="mv-st2 fx" cx="400" cy="445" rx="8.9" ry="6.7" fill="#948a7d" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.84s)"/>
+ <ellipse class="mv-st2 fx" cx="488" cy="480" rx="16.0" ry="11.4" fill="#7f776b" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 27.93s)"/>
+ <ellipse class="mv-st2 fx" cx="718" cy="408" rx="11.7" ry="8.7" fill="#a09585" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 28.02s)"/>
+ <ellipse class="mv-st2 fx" cx="658" cy="503" rx="10.9" ry="8.0" fill="#8d8377" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 28.11s)"/>
+
+ <g clip-path="url(#mvValley)">
+  <g class="mv-flood fx" style="transform-box:view-box; transform-origin:500px 252px">
+   <circle cx="500" cy="252" r="370" fill="#a9c3c8"/>
+   <path class="mv-wave" d="M250,330 C400,316 600,344 760,322" stroke="#eaf5f8" stroke-width="6" fill="none" opacity=".65" style="animation-delay:calc(var(--t) + 18.2s)"/>
+   <path class="mv-wave" d="M250,388 C400,374 600,402 760,380" stroke="#eaf5f8" stroke-width="6" fill="none" opacity=".65" style="animation-delay:calc(var(--t) + 18.9s)"/>
+   <path class="mv-wave" d="M250,446 C400,432 600,460 760,438" stroke="#eaf5f8" stroke-width="6" fill="none" opacity=".65" style="animation-delay:calc(var(--t) + 19.599999999999998s)"/>
+   <path class="mv-wave" d="M250,500 C400,486 600,514 760,492" stroke="#eaf5f8" stroke-width="6" fill="none" opacity=".65" style="animation-delay:calc(var(--t) + 20.299999999999997s)"/>
+  </g>
+ </g>
+ <g clip-path="url(#mvValley)">
+  <g class="mv-flood2 fx" style="transform-box:view-box; transform-origin:500px 252px">
+   <circle cx="500" cy="252" r="370" fill="#a9c3c8"/>
+   <path class="mv-wave" d="M250,330 C400,316 600,344 760,322" stroke="#eaf5f8" stroke-width="6" fill="none" opacity=".65" style="animation-delay:calc(var(--t) + 25.8s)"/>
+   <path class="mv-wave" d="M250,388 C400,374 600,402 760,380" stroke="#eaf5f8" stroke-width="6" fill="none" opacity=".65" style="animation-delay:calc(var(--t) + 26.5s)"/>
+   <path class="mv-wave" d="M250,446 C400,432 600,460 760,438" stroke="#eaf5f8" stroke-width="6" fill="none" opacity=".65" style="animation-delay:calc(var(--t) + 27.2s)"/>
+   <path class="mv-wave" d="M250,500 C400,486 600,514 760,492" stroke="#eaf5f8" stroke-width="6" fill="none" opacity=".65" style="animation-delay:calc(var(--t) + 27.9s)"/>
+  </g>
+ </g>
+
+ <path d="M-5,178 C90,150 200,184 262,224 C300,248 322,246 330,258 C348,288 306,386 268,520 L-5,520 Z" fill="url(#mvGL)"/>
+ <path d="M1005,174 C910,148 800,180 738,222 C700,246 678,246 670,258 C652,288 694,386 732,520 L1005,520 Z" fill="url(#mvGR)"/>
+ <path d="M330,258 C348,288 306,386 268,520 L196,520 C238,388 284,296 330,258 Z" fill="#9dbb80" opacity=".4"/>
+ <path d="M670,258 C652,288 694,386 732,520 L804,520 C762,388 716,296 670,258 Z" fill="#9dbb80" opacity=".4"/>
+ <path d="M24,268 C104,306 172,384 204,520" stroke="#8fb073" stroke-width="4" fill="none" opacity=".42"/>
+ <path d="M118,232 C176,272 226,344 250,452" stroke="#8fb073" stroke-width="3" fill="none" opacity=".32"/>
+ <path d="M976,264 C896,302 828,380 796,520" stroke="#8fb073" stroke-width="4" fill="none" opacity=".42"/>
+ <path d="M882,228 C824,268 774,340 750,448" stroke="#8fb073" stroke-width="3" fill="none" opacity=".32"/>
+
+ <path class="mv-veil fx" d="M330,258 C348,288 306,386 268,520 L104,520 C142,398 190,306 262,246 Z" fill="#a4835f"/>
+ <path class="mv-veil fx" d="M670,258 C652,288 694,386 732,520 L896,520 C858,398 810,306 738,244 Z" fill="#a4835f" style="animation-delay:calc(var(--t) + 11.2s), calc(var(--t) + 20s)"/>
+
+ <rect class="mv-dark fx" width="1000" height="520" fill="#414351" opacity="0"/>
+
+ <ellipse class="mv-glow fx" cx="205" cy="80" rx="14" ry="5" fill="#e2622b"/>
+ <circle class="mv-ejA fx" cx="205" cy="82" r="7" fill="#e0682f" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 8.5s)"/>
+ <circle class="mv-ejB fx" cx="205" cy="82" r="5" fill="#e0682f" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 9.1s)"/>
+ <circle class="mv-ejC fx" cx="205" cy="82" r="6" fill="#e0682f" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 9.8s)"/>
+ <circle class="mv-ejA fx" cx="205" cy="82" r="4" fill="#e0682f" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 10.6s)"/>
+ <circle class="mv-ejB fx" cx="205" cy="82" r="6" fill="#e0682f" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 11.4s)"/>
+ <circle class="mv-ejC fx" cx="205" cy="82" r="5" fill="#e0682f" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 12.3s)"/>
+ <g fill="#a8a29a" opacity=".9">
+ <circle class="mv-plume fx" cx="205" cy="74" r="24" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 8.5s), calc(var(--t) + 17.2s)"/>
+ <circle class="mv-plume fx" cx="198" cy="66" r="17" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 9.3s), calc(var(--t) + 17.2s)"/>
+ <circle class="mv-plume fx" cx="214" cy="70" r="20" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 10.1s), calc(var(--t) + 17.2s)"/>
+ <circle class="mv-plume fx" cx="206" cy="62" r="26" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 10.9s), calc(var(--t) + 17.2s)"/>
+ <circle class="mv-plume fx" cx="196" cy="70" r="15" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 11.7s), calc(var(--t) + 17.2s)"/>
+ <circle class="mv-plume fx" cx="216" cy="64" r="21" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 12.5s), calc(var(--t) + 17.2s)"/>
+ <circle class="mv-plume fx" cx="204" cy="68" r="23" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 13.3s), calc(var(--t) + 17.2s)"/>
+ <circle class="mv-plume fx" cx="200" cy="60" r="18" style="transform-box:fill-box; transform-origin:center; animation-delay:calc(var(--t) + 14.1s), calc(var(--t) + 17.2s)"/>
+ </g>
+ <g class="mv-cloud fx" fill="#9e9891" style="transform-box:fill-box; transform-origin:20% 100%">
+  <ellipse cx="250" cy="52" rx="86" ry="34"/>
+  <ellipse cx="370" cy="42" rx="92" ry="30"/>
+  <ellipse cx="480" cy="50" rx="80" ry="26"/>
+  <ellipse cx="316" cy="66" rx="70" ry="24"/>
+ </g>
+ <circle class="mv-fall fx" cx="148" cy="114" r="3.2" fill="#8b8175" style="animation-delay:calc(var(--t) + 9.62s)"/>
+ <circle class="mv-fall fx" cx="187" cy="107" r="3.2" fill="#8b8175" style="animation-delay:calc(var(--t) + 9.73s)"/>
+ <circle class="mv-fall fx" cx="218" cy="122" r="2.3" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.02s)"/>
+ <circle class="mv-fall fx" cx="236" cy="125" r="2.4" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.11s)"/>
+ <circle class="mv-fall fx" cx="284" cy="110" r="4.7" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.32s)"/>
+ <circle class="mv-fall fx" cx="316" cy="102" r="3.7" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.3s)"/>
+ <circle class="mv-fall fx" cx="337" cy="100" r="3.6" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.27s)"/>
+ <circle class="mv-fall fx" cx="375" cy="113" r="3.6" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.59s)"/>
+ <circle class="mv-fall fx" cx="411" cy="118" r="2.5" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.69s)"/>
+ <circle class="mv-fall fx" cx="432" cy="142" r="2.5" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.86s)"/>
+ <circle class="mv-fall fx" cx="476" cy="102" r="3.8" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.85s)"/>
+ <circle class="mv-fall fx" cx="507" cy="149" r="4.2" fill="#8b8175" style="animation-delay:calc(var(--t) + 10.93s)"/>
+ <circle class="mv-fall fx" cx="536" cy="141" r="3.0" fill="#8b8175" style="animation-delay:calc(var(--t) + 11.2s)"/>
+ <circle class="mv-fall fx" cx="576" cy="126" r="2.4" fill="#8b8175" style="animation-delay:calc(var(--t) + 11.05s)"/>
+ <circle class="mv-fall fx" cx="601" cy="138" r="4.1" fill="#8b8175" style="animation-delay:calc(var(--t) + 11.14s)"/>
+ <circle class="mv-fall fx" cx="620" cy="110" r="3.5" fill="#8b8175" style="animation-delay:calc(var(--t) + 11.18s)"/>
+ <circle class="mv-fall fx" cx="660" cy="114" r="4.6" fill="#8b8175" style="animation-delay:calc(var(--t) + 11.41s)"/>
+ <circle class="mv-fall fx" cx="703" cy="104" r="4.2" fill="#8b8175" style="animation-delay:calc(var(--t) + 11.59s)"/>
+ <circle class="mv-fall fx" cx="724" cy="138" r="4.0" fill="#8b8175" style="animation-delay:calc(var(--t) + 11.7s)"/>
+ <circle class="mv-fall fx" cx="764" cy="153" r="2.4" fill="#8b8175" style="animation-delay:calc(var(--t) + 11.55s)"/>
+ <circle class="mv-fall fx" cx="786" cy="155" r="4.0" fill="#8b8175" style="animation-delay:calc(var(--t) + 11.63s)"/>
+ <circle class="mv-fall fx" cx="833" cy="134" r="3.9" fill="#8b8175" style="animation-delay:calc(var(--t) + 12.2s)"/>
+ <circle class="mv-fall fx" cx="856" cy="131" r="4.1" fill="#8b8175" style="animation-delay:calc(var(--t) + 12.24s)"/>
+ <circle class="mv-fall fx" cx="885" cy="97" r="4.6" fill="#8b8175" style="animation-delay:calc(var(--t) + 12.08s)"/>
+
+ <g class="mv-zoom fx">
+  <rect x="36" y="306" width="300" height="192" rx="14" fill="#fbf7ee" stroke="#8a7a5f" stroke-width="4"/>
+  <text class="rb" x="186" y="332" text-anchor="middle" style="font-size:20px">土の中のようす</text>
+  <g clip-path="url(#mvBox)">
+   <rect x="42" y="340" width="288" height="124" fill="#e6d3ae"/>
+   <path d="M42,340 L330,340 L330,358 C296,366 262,352 228,360 C194,368 160,354 126,360 C94,366 70,356 42,362 Z" fill="#9c8258"/>
+   <ellipse cx="246" cy="455" rx="5.5" ry="4.7" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="222" cy="398" rx="5.8" ry="5.0" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="62" cy="427" rx="4.6" ry="3.8" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="319" cy="416" rx="7.0" ry="6.2" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="219" cy="428" rx="4.7" ry="3.9" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="147" cy="435" rx="6.3" ry="5.5" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="124" cy="402" rx="5.5" ry="4.7" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="298" cy="434" rx="6.8" ry="6.0" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="101" cy="395" rx="5.0" ry="4.2" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="247" cy="432" rx="6.9" ry="6.1" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="125" cy="431" rx="4.8" ry="4.0" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="197" cy="380" rx="5.7" ry="4.9" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="261" cy="403" rx="5.3" ry="4.5" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="267" cy="427" rx="4.6" ry="3.8" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="97" cy="373" rx="4.6" ry="3.8" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="301" cy="456" rx="4.6" ry="3.8" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="202" cy="455" rx="5.4" ry="4.6" fill="#f4f8fa" opacity=".95"/>
+   <ellipse cx="93" cy="460" rx="6.3" ry="5.5" fill="#f4f8fa" opacity=".95"/>
+   <ellipse class="mv-drop" cx="62" cy="346" rx="4.6" ry="6.4" fill="#3f9ed4" style="animation-delay:calc(var(--t) + 37.0s)"/>
+   <ellipse class="mv-drop" cx="98" cy="346" rx="4.6" ry="6.4" fill="#3f9ed4" style="animation-delay:calc(var(--t) + 37.3s)"/>
+   <ellipse class="mv-drop" cx="134" cy="346" rx="4.6" ry="6.4" fill="#3f9ed4" style="animation-delay:calc(var(--t) + 37.6s)"/>
+   <ellipse class="mv-drop" cx="170" cy="346" rx="4.6" ry="6.4" fill="#3f9ed4" style="animation-delay:calc(var(--t) + 37.9s)"/>
+   <ellipse class="mv-drop" cx="206" cy="346" rx="4.6" ry="6.4" fill="#3f9ed4" style="animation-delay:calc(var(--t) + 38.2s)"/>
+   <ellipse class="mv-drop" cx="242" cy="346" rx="4.6" ry="6.4" fill="#3f9ed4" style="animation-delay:calc(var(--t) + 38.5s)"/>
+   <ellipse class="mv-drop" cx="278" cy="346" rx="4.6" ry="6.4" fill="#3f9ed4" style="animation-delay:calc(var(--t) + 38.8s)"/>
+   <ellipse class="mv-drop" cx="312" cy="346" rx="4.6" ry="6.4" fill="#3f9ed4" style="animation-delay:calc(var(--t) + 39.1s)"/>
+   <ellipse cx="70" cy="383" rx="22" ry="14" fill="#8f8578"/>
+   <ellipse cx="120" cy="380" rx="15" ry="11" fill="#a2988a"/>
+   <ellipse cx="166" cy="384" rx="20" ry="13" fill="#7e7568"/>
+   <ellipse cx="218" cy="378" rx="14" ry="10" fill="#998f81"/>
+   <ellipse cx="264" cy="379" rx="22" ry="14" fill="#8f8578"/>
+   <ellipse cx="310" cy="386" rx="14" ry="10" fill="#a2988a"/>
+   <ellipse cx="48" cy="411" rx="15" ry="11" fill="#7e7568"/>
+   <ellipse cx="96" cy="415" rx="19" ry="13" fill="#998f81"/>
+   <ellipse cx="144" cy="410" rx="14" ry="10" fill="#8f8578"/>
+   <ellipse cx="190" cy="418" rx="23" ry="15" fill="#a2988a"/>
+   <ellipse cx="242" cy="413" rx="16" ry="11" fill="#7e7568"/>
+   <ellipse cx="292" cy="410" rx="18" ry="12" fill="#998f81"/>
+   <ellipse cx="72" cy="445" rx="19" ry="13" fill="#8f8578"/>
+   <ellipse cx="124" cy="450" rx="16" ry="11" fill="#a2988a"/>
+   <ellipse cx="174" cy="450" rx="21" ry="14" fill="#7e7568"/>
+   <ellipse cx="224" cy="445" rx="15" ry="10" fill="#998f81"/>
+   <ellipse cx="274" cy="447" rx="20" ry="13" fill="#8f8578"/>
+   <ellipse cx="318" cy="445" rx="14" ry="10" fill="#a2988a"/>
+  </g>
+  <ellipse cx="66" cy="481" rx="13" ry="9" fill="#8f8578"/>
+  <text class="rb" x="86" y="487" style="font-size:17px">石ころ</text>
+  <circle cx="196" cy="481" r="8" fill="#f4f8fa" stroke="#b3a894" stroke-width="2"/>
+  <text class="rb" x="212" y="487" style="font-size:17px">すきま</text>
+ </g>
+
+ <text class="lb mv-cap1 fx" x="500" y="474" text-anchor="middle">湖のような土地</text>
+ <text class="lb mv-cap2a fx" x="252" y="196" text-anchor="middle">山がふん火する</text>
+ <g class="mv-cap2b fx">
+  <text class="rb" x="722" y="286" text-anchor="middle">かざんばい</text>
+  <text class="rb" x="820" y="286" text-anchor="middle">かるいし</text>
+  <text class="lb" x="806" y="316" text-anchor="middle">火山灰や軽石などで</text>
+  <text class="lb" x="806" y="356" text-anchor="middle">うめつくされる</text>
+ </g>
+ <g class="mv-cap3a fx">
+  <text class="lb" x="500" y="300" text-anchor="middle">川がはんらんして</text>
+  <text class="lb" x="500" y="340" text-anchor="middle">けずっていく</text>
+ </g>
+ <g class="mv-cap3b fx">
+  <text class="rb" x="444" y="272" text-anchor="middle">なんど</text>
+  <text class="rb" x="514" y="272" text-anchor="middle">なんど</text>
+  <text class="lb" x="500" y="302" text-anchor="middle">何度も何度も</text>
+  <text class="lb" x="500" y="342" text-anchor="middle">くりかえされる</text>
+ </g>
+ <g class="mv-cap3 fx">
+  <text class="rb" x="160" y="352" text-anchor="middle">かざんばい</text>
+  <text class="rb" x="258" y="352" text-anchor="middle">かるいし</text>
+  <text class="lb" x="216" y="382" text-anchor="middle">火山灰や軽石が</text>
+  <text class="lb" x="216" y="422" text-anchor="middle">のこったところ</text>
+  <path d="M280,438 L346,472" stroke="#2b2b2b" stroke-width="4" fill="none"/>
+  <path d="M346,472 L326,470 L334,458 Z" fill="#2b2b2b"/>
+  <text class="rb" x="758" y="362" text-anchor="middle">すな</text>
+  <text class="lb" x="800" y="392" text-anchor="middle">石や砂がたまった</text>
+  <text class="lb" x="800" y="432" text-anchor="middle">ところ</text>
+  <path d="M744,446 L676,470" stroke="#2b2b2b" stroke-width="4" fill="none"/>
+  <path d="M676,470 L696,470 L690,458 Z" fill="#2b2b2b"/>
+ </g>
+ <g class="mv-cap4 fx">
+  <text class="lb" x="654" y="404" text-anchor="middle">石ころだらけで</text>
+  <text class="lb" x="654" y="444" text-anchor="middle">水がしみこみやすい</text>
+ </g>
+</svg>`;
+
+const SVG_ZUIDO=`<svg class="mv" viewBox="0 0 1000 520" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"><defs><pattern id="mzSand" width="15" height="15" patternUnits="userSpaceOnUse"><rect width="15" height="15" fill="#f2ddbe"/><circle cx="3.5" cy="4" r="1.8" fill="#c4a173"/><circle cx="11" cy="9.5" r="2.1" fill="#c4a173"/><circle cx="6.5" cy="12.5" r="1.4" fill="#d9bf95"/><circle cx="12.5" cy="2.5" r="1.3" fill="#d9bf95"/></pattern></defs><rect x="0" y="0" width="1000" height="520" fill="#f4f8fa"/><g class="mz-sc fx" style="animation-delay:calc(var(--t) + 0.2s), calc(var(--t) + 11.4s)"><text class="mz-ti" x="500" y="58" text-anchor="middle">ずい道の中に、なぜ石をつむの？</text><text class="mz-rb" x="370.0" y="36.7" text-anchor="middle">どう</text><text class="mz-rb" x="422.0" y="36.7" text-anchor="middle">なか</text><text class="mz-rb" x="552.0" y="36.7" text-anchor="middle">いし</text><rect x="268" y="108" width="360" height="296" fill="url(#mzSand)"/><path d="M327.4 382.5 L327.4 226.4 L448.0 114.0 L568.6 226.4 L568.6 382.5 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.8"/><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 1.4s)"><path d="M448.0 110.0 V102" stroke="#6b5a44" stroke-width="2" fill="none"/><text class="mz-nm" x="448.0" y="96" text-anchor="middle">天井</text><text class="mz-rb" x="448.0" y="78.8" text-anchor="middle">てんじょう</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 1.9s)"><path d="M323.4 290.0 H228" stroke="#6b5a44" stroke-width="2" fill="none"/><text class="mz-nm" x="222" y="297.0" text-anchor="end">かべ</text><path d="M572.6 290.0 H668" stroke="#6b5a44" stroke-width="2" fill="none"/><text class="mz-nm" x="674" y="297.0" text-anchor="start">かべ</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 2.4s)"><path d="M448.0 386.5 V424" stroke="#6b5a44" stroke-width="2" fill="none"/><text class="mz-nm" x="448.0" y="446" text-anchor="middle">ゆか</text></g><g class="mz-fall fx" style="animation-delay:calc(var(--t) + 3.4s), calc(var(--t) + 7.2s)"><g class="mz-arrow" transform="translate(448.0,203.2) rotate(0)" style="animation-delay:calc(var(--t) + 3.5s)"><path d="M0 -22 L0 12 M-9 2 L0 14 L9 2" stroke="#d6392c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g class="mz-arrow" transform="translate(357.4,274.0) rotate(-70)" style="animation-delay:calc(var(--t) + 3.65s)"><path d="M0 -22 L0 12 M-9 2 L0 14 L9 2" stroke="#d6392c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g class="mz-arrow" transform="translate(538.6,274.0) rotate(70)" style="animation-delay:calc(var(--t) + 3.8s)"><path d="M0 -22 L0 12 M-9 2 L0 14 L9 2" stroke="#d6392c" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><circle class="mz-dot" cx="418.0" cy="173.2" r="3.2" fill="#a98255" style="animation-delay:calc(var(--t) + 3.6s)"/><circle class="mz-dot" cx="474.0" cy="177.2" r="4.2" fill="#a98255" style="animation-delay:calc(var(--t) + 3.84s)"/><circle class="mz-dot" cx="450.0" cy="163.2" r="3.2" fill="#a98255" style="animation-delay:calc(var(--t) + 4.08s)"/><circle class="mz-dot" cx="438.0" cy="193.2" r="4.2" fill="#a98255" style="animation-delay:calc(var(--t) + 4.32s)"/><circle class="mz-dot" cx="341.4" cy="242.4" r="3.2" fill="#a98255" style="animation-delay:calc(var(--t) + 4.56s)"/><circle class="mz-dot" cx="347.4" cy="288.4" r="4.2" fill="#a98255" style="animation-delay:calc(var(--t) + 4.8s)"/><circle class="mz-dot" cx="554.6" cy="250.4" r="3.2" fill="#a98255" style="animation-delay:calc(var(--t) + 5.04s)"/><circle class="mz-dot" cx="549.6" cy="296.4" r="4.2" fill="#a98255" style="animation-delay:calc(var(--t) + 5.28s)"/><g transform="translate(662,150)"><rect x="0" y="-28" width="172" height="40" rx="9" fill="#fdecea" stroke="#d6392c" stroke-width="2"/><text class="mz-msg" x="86" y="0" text-anchor="middle">土がくずれる！</text><text class="mz-rb" x="23.0" y="-17.2" text-anchor="middle">つち</text></g></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 7.2s)"><path d="M327.4 226.4 L448.0 114.0 L568.6 226.4 L539.8 226.4 L448.0 151.2 L356.2 226.4 Z" class="mz-st" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.6" style="animation-delay:calc(var(--t) + 7.5s)"/><rect x="327.4" y="226.4" width="28.8" height="127.3" class="mz-st" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.6" style="animation-delay:calc(var(--t) + 8.0s)"/><rect x="539.8" y="226.4" width="28.8" height="127.3" class="mz-st" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.6" style="animation-delay:calc(var(--t) + 8.5s)"/><rect x="327.4" y="353.7" width="241.2" height="28.8" class="mz-st" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.6" style="animation-delay:calc(var(--t) + 9.0s)"/></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 9.7s)"><g transform="translate(662,258)"><rect x="0" y="-28" width="216" height="40" rx="9" fill="#eaf3ee" stroke="#3d8a5f" stroke-width="2"/><text class="mz-msg2" x="108" y="0" text-anchor="middle">石をつんで ささえる</text><text class="mz-rb" x="13.5" y="-17.2" text-anchor="middle">いし</text></g></g></g><g class="mz-sc fx" style="animation-delay:calc(var(--t) + 12.2s), calc(var(--t) + 24.4s)"><text class="mz-ti" x="500" y="54" text-anchor="middle">天井の土が　くずれやすい　とき</text><text class="mz-rb" x="331.0" y="32.7" text-anchor="middle">てんじょう</text><text class="mz-rb" x="396.0" y="32.7" text-anchor="middle">つち</text><text class="mz-sub" x="500" y="88" text-anchor="middle">→　天井を　三角にして、石をつむ</text><text class="mz-rb" x="405.0" y="72.4" text-anchor="middle">てんじょう</text><text class="mz-rb" x="481.0" y="72.4" text-anchor="middle">さんかく</text><text class="mz-rb" x="585.5" y="72.4" text-anchor="middle">いし</text><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 12.9s)"><rect x="26" y="138" width="214" height="196" fill="url(#mzSand)"/><path d="M61.3 216.4 L133.0 144.0 L204.7 216.4 L187.6 216.4 L133.0 167.0 L78.4 216.4 Z" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="61.3" y="216.4" width="17.1" height="84.3" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="187.6" y="216.4" width="17.1" height="84.3" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="61.3" y="300.7" width="143.4" height="17.1" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M61.3 237.5 H78.4 M187.6 237.5 H204.7 M61.3 258.5 H78.4 M187.6 258.5 H204.7 M61.3 279.6 H78.4 M187.6 279.6 H204.7 M100.2 196.7 L88.8 184.0 M165.8 196.7 L177.2 184.0 M119.3 179.4 L107.9 166.7 M146.7 179.4 L158.1 166.7 M101.5 300.7 V317.8 M133.0 300.7 V317.8 M164.5 300.7 V317.8" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M78.4 300.7 L78.4 216.4 L133.0 167.0 L187.6 216.4 L187.6 300.7 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="26" y="138" width="214" height="196" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="133.0" y="368" text-anchor="middle">四方留</text><text class="mz-rb" x="114.0" y="352.4" text-anchor="middle">し</text><text class="mz-rb" x="133.0" y="352.4" text-anchor="middle">ほう</text><text class="mz-rb" x="152.0" y="352.4" text-anchor="middle">どめ</text><text class="mz-sm" x="133.0" y="396" text-anchor="middle">天井・両がわ・ゆか</text><circle cx="222" cy="156" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="222" y="162.5" text-anchor="middle">4</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 14.7s)"><rect x="271" y="138" width="214" height="196" fill="url(#mzSand)"/><rect x="271" y="300.7" width="214" height="33.3" fill="#b98b52"/><path d="M306.3 216.4 L378.0 144.0 L449.7 216.4 L432.6 216.4 L378.0 167.0 L323.4 216.4 Z" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="306.3" y="216.4" width="17.1" height="84.3" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="432.6" y="216.4" width="17.1" height="84.3" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M306.3 237.5 H323.4 M432.6 237.5 H449.7 M306.3 258.5 H323.4 M432.6 258.5 H449.7 M306.3 279.6 H323.4 M432.6 279.6 H449.7 M345.2 196.7 L333.8 184.0 M410.8 196.7 L422.2 184.0 M364.4 179.4 L352.9 166.7 M391.6 179.4 L403.1 166.7" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M323.4 300.7 L323.4 216.4 L378.0 167.0 L432.6 216.4 L432.6 300.7 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="271" y="138" width="214" height="196" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="378.0" y="368" text-anchor="middle">三方留</text><text class="mz-rb" x="359.0" y="352.4" text-anchor="middle">さん</text><text class="mz-rb" x="378.0" y="352.4" text-anchor="middle">ぼう</text><text class="mz-rb" x="397.0" y="352.4" text-anchor="middle">どめ</text><text class="mz-sm" x="378.0" y="396" text-anchor="middle">天井と 両がわ</text><circle cx="467" cy="156" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="467" y="162.5" text-anchor="middle">3</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 16.5s)"><rect x="516" y="138" width="214" height="196" fill="url(#mzSand)"/><path d="M730 263.8 L677.6 216.4 L677.6 300.7 L730 300.7 Z" fill="#b98b52"/><rect x="516" y="300.7" width="214" height="33.3" fill="#b98b52"/><path d="M551.3 216.4 L623.0 144.0 L694.7 216.4 L677.6 216.4 L623.0 167.0 L568.4 216.4 Z" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="551.3" y="216.4" width="17.1" height="84.3" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M551.3 237.5 H568.4 M551.3 258.5 H568.4 M551.3 279.6 H568.4 M590.2 196.7 L578.8 184.0 M655.8 196.7 L667.2 184.0 M609.4 179.4 L597.9 166.7 M636.6 179.4 L648.1 166.7" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M568.4 300.7 L568.4 216.4 L623.0 167.0 L677.6 216.4 L677.6 300.7 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="516" y="138" width="214" height="196" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="623.0" y="368" text-anchor="middle">天井留とかた側石がき</text><text class="mz-rb" x="556.5" y="352.4" text-anchor="middle">てんじょうどめ</text><text class="mz-rb" x="651.5" y="352.4" text-anchor="middle">がわ</text><text class="mz-rb" x="670.5" y="352.4" text-anchor="middle">いし</text><text class="mz-sm" x="623.0" y="396" text-anchor="middle">天井と かた方のかべ</text><circle cx="712" cy="156" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="712" y="162.5" text-anchor="middle">2</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 18.3s)"><rect x="761" y="138" width="214" height="196" fill="url(#mzSand)"/><path d="M761 263.8 L813.4 216.4 L813.4 300.7 L761 300.7 Z" fill="#b98b52"/><path d="M975 263.8 L922.6 216.4 L922.6 300.7 L975 300.7 Z" fill="#b98b52"/><rect x="761" y="300.7" width="214" height="33.3" fill="#b98b52"/><path d="M796.3 216.4 L868.0 144.0 L939.7 216.4 L922.6 216.4 L868.0 167.0 L813.4 216.4 Z" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M835.2 196.7 L823.8 184.0 M900.8 196.7 L912.2 184.0 M854.4 179.4 L842.9 166.7 M881.6 179.4 L893.1 166.7" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M813.4 300.7 L813.4 216.4 L868.0 167.0 L922.6 216.4 L922.6 300.7 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="761" y="138" width="214" height="196" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="868.0" y="368" text-anchor="middle">天井留</text><text class="mz-rb" x="868.0" y="352.4" text-anchor="middle">てんじょうどめ</text><text class="mz-sm" x="868.0" y="396" text-anchor="middle">天井だけ</text><circle cx="957" cy="156" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="957" y="162.5" text-anchor="middle">1</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 21.6s)"><rect x="201.0" y="420" width="598" height="34" rx="9" fill="#eef4f7" stroke="#9fc0d0" stroke-width="1.6"/><text class="mz-note" x="500" y="444" text-anchor="middle">くずれやすい ところが 多いほど、石をつむ ところも 多くなる</text><text class="mz-rb" x="446.0" y="429.2" text-anchor="middle">おお</text><text class="mz-rb" x="536.0" y="429.2" text-anchor="middle">いし</text><text class="mz-rb" x="716.0" y="429.2" text-anchor="middle">おお</text></g></g><g class="mz-sc fx" style="animation-delay:calc(var(--t) + 25.2s), calc(var(--t) + 34.4s)"><text class="mz-ti" x="500" y="54" text-anchor="middle">天井が　固い岩の　とき</text><text class="mz-rb" x="383.0" y="32.7" text-anchor="middle">てんじょう</text><text class="mz-rb" x="474.0" y="32.7" text-anchor="middle">かた</text><text class="mz-rb" x="526.0" y="32.7" text-anchor="middle">いわ</text><text class="mz-sub" x="500" y="88" text-anchor="middle">→　天井には　石をつまなくてよい</text><text class="mz-rb" x="405.0" y="72.4" text-anchor="middle">てんじょう</text><text class="mz-rb" x="490.5" y="72.4" text-anchor="middle">いし</text><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 25.9s)"><rect x="166" y="114" width="268" height="218" fill="url(#mzSand)"/><rect x="166" y="114" width="268" height="61.0" fill="#b98b52"/><rect x="210.3" y="175.0" width="21.4" height="157.0" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="368.3" y="175.0" width="21.4" height="157.0" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M210.3 214.3 H231.7 M368.3 214.3 H389.7 M210.3 253.5 H231.7 M368.3 253.5 H389.7 M210.3 292.8 H231.7 M368.3 292.8 H389.7" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M231.7 332 H368.3 V175.0 H231.7 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="166" y="114" width="268" height="218" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="300.0" y="369" text-anchor="middle">両側石がき</text><text class="mz-rb" x="256.0" y="351.0" text-anchor="middle">りょう</text><text class="mz-rb" x="278.0" y="351.0" text-anchor="middle">がわ</text><text class="mz-rb" x="300.0" y="351.0" text-anchor="middle">いし</text><text class="mz-sm" x="300.0" y="399" text-anchor="middle">両がわの かべ</text><circle cx="416" cy="132" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="416" y="138.5" text-anchor="middle">2</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 28.5s)"><rect x="566" y="114" width="268" height="218" fill="url(#mzSand)"/><rect x="566" y="114" width="268" height="61.0" fill="#b98b52"/><rect x="768.3" y="175.0" width="65.7" height="157.0" fill="#b98b52"/><rect x="610.3" y="175.0" width="21.4" height="157.0" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M610.3 214.3 H631.7 M610.3 253.5 H631.7 M610.3 292.8 H631.7" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M631.7 332 H768.3 V175.0 H631.7 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="566" y="114" width="268" height="218" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="700.0" y="369" text-anchor="middle">かた側石がき</text><text class="mz-rb" x="689.0" y="351.0" text-anchor="middle">がわ</text><text class="mz-rb" x="711.0" y="351.0" text-anchor="middle">いし</text><text class="mz-sm" x="700.0" y="399" text-anchor="middle">かた方の かべ</text><circle cx="816" cy="132" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="816" y="138.5" text-anchor="middle">1</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 31.4s)"><rect x="291.0" y="420" width="418" height="34" rx="9" fill="#eef4f7" stroke="#9fc0d0" stroke-width="1.6"/><text class="mz-note" x="500" y="444" text-anchor="middle">岩が 固ければ、石をつむ 手間が はぶける</text><text class="mz-rb" x="320.0" y="429.2" text-anchor="middle">いわ</text><text class="mz-rb" x="374.0" y="429.2" text-anchor="middle">かた</text><text class="mz-rb" x="464.0" y="429.2" text-anchor="middle">いし</text><text class="mz-rb" x="563.0" y="429.2" text-anchor="middle">てま</text></g></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 35.2s)"><text class="mz-ti" x="500" y="42" text-anchor="middle">くずれやすい　ところにだけ　石をつむ</text><text class="mz-rb" x="637.5" y="21.5" text-anchor="middle">いし</text><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 35.8s)"><rect x="29.0" y="68" width="180" height="116" fill="url(#mzSand)"/><path d="M58.7 114.4 L119.0 74.0 L179.3 114.4 L164.9 114.4 L119.0 90.3 L73.1 114.4 Z" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="58.7" y="114.4" width="14.4" height="49.9" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="164.9" y="114.4" width="14.4" height="49.9" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="58.7" y="164.3" width="120.6" height="14.4" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M58.7 132.4 H73.1 M164.9 132.4 H179.3 M58.7 150.4 H73.1 M164.9 150.4 H179.3 M91.5 104.7 L84.8 92.0 M146.5 104.7 L153.2 92.0 M107.5 96.3 L100.8 83.6 M130.5 96.3 L137.2 83.6 M92.5 164.3 V178.7 M119.0 164.3 V178.7 M145.5 164.3 V178.7" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M73.1 164.3 L73.1 114.4 L119.0 90.3 L164.9 114.4 L164.9 164.3 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="29.0" y="68" width="180" height="116" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="119.0" y="216" text-anchor="middle">四方留</text><text class="mz-rb" x="102.0" y="202.1" text-anchor="middle">し</text><text class="mz-rb" x="119.0" y="202.1" text-anchor="middle">ほう</text><text class="mz-rb" x="136.0" y="202.1" text-anchor="middle">どめ</text><text class="mz-sm" x="119.0" y="242" text-anchor="middle">天井・両がわ・ゆか</text><circle cx="191.0" cy="86" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="191.0" y="92.5" text-anchor="middle">4</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 36.25s)"><rect x="410.0" y="68" width="180" height="116" fill="url(#mzSand)"/><rect x="410.0" y="164.3" width="180" height="19.7" fill="#b98b52"/><path d="M439.7 114.4 L500.0 74.0 L560.3 114.4 L545.9 114.4 L500.0 90.3 L454.1 114.4 Z" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="439.7" y="114.4" width="14.4" height="49.9" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="545.9" y="114.4" width="14.4" height="49.9" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M439.7 132.4 H454.1 M545.9 132.4 H560.3 M439.7 150.4 H454.1 M545.9 150.4 H560.3 M472.5 104.7 L465.8 92.0 M527.5 104.7 L534.2 92.0 M488.5 96.3 L481.8 83.6 M511.5 96.3 L518.2 83.6" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M454.1 164.3 L454.1 114.4 L500.0 90.3 L545.9 114.4 L545.9 164.3 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="410.0" y="68" width="180" height="116" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="500.0" y="216" text-anchor="middle">三方留</text><text class="mz-rb" x="483.0" y="202.1" text-anchor="middle">さん</text><text class="mz-rb" x="500.0" y="202.1" text-anchor="middle">ぼう</text><text class="mz-rb" x="517.0" y="202.1" text-anchor="middle">どめ</text><text class="mz-sm" x="500.0" y="242" text-anchor="middle">天井と 両がわ</text><circle cx="572.0" cy="86" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="572.0" y="92.5" text-anchor="middle">3</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 36.7s)"><rect x="791.0" y="68" width="180" height="116" fill="url(#mzSand)"/><path d="M971.0 137.6 L926.9 114.4 L926.9 164.3 L971.0 164.3 Z" fill="#b98b52"/><rect x="791.0" y="164.3" width="180" height="19.7" fill="#b98b52"/><path d="M820.7 114.4 L881.0 74.0 L941.3 114.4 L926.9 114.4 L881.0 90.3 L835.1 114.4 Z" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="820.7" y="114.4" width="14.4" height="49.9" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M820.7 132.4 H835.1 M820.7 150.4 H835.1 M853.5 104.7 L846.8 92.0 M908.5 104.7 L915.2 92.0 M869.5 96.3 L862.8 83.6 M892.5 96.3 L899.2 83.6" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M835.1 164.3 L835.1 114.4 L881.0 90.3 L926.9 114.4 L926.9 164.3 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="791.0" y="68" width="180" height="116" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="881.0" y="216" text-anchor="middle">天井留とかた側石がき</text><text class="mz-rb" x="821.5" y="202.1" text-anchor="middle">てんじょうどめ</text><text class="mz-rb" x="906.5" y="202.1" text-anchor="middle">がわ</text><text class="mz-rb" x="923.5" y="202.1" text-anchor="middle">いし</text><text class="mz-sm" x="881.0" y="242" text-anchor="middle">天井と かた方のかべ</text><circle cx="953.0" cy="86" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="953.0" y="92.5" text-anchor="middle">2</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 37.15s)"><rect x="29.0" y="270" width="180" height="116" fill="url(#mzSand)"/><path d="M29.0 339.6 L73.1 316.4 L73.1 366.3 L29.0 366.3 Z" fill="#b98b52"/><path d="M209.0 339.6 L164.9 316.4 L164.9 366.3 L209.0 366.3 Z" fill="#b98b52"/><rect x="29.0" y="366.3" width="180" height="19.7" fill="#b98b52"/><path d="M58.7 316.4 L119.0 276.0 L179.3 316.4 L164.9 316.4 L119.0 292.3 L73.1 316.4 Z" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M91.5 306.7 L84.8 294.0 M146.5 306.7 L153.2 294.0 M107.5 298.3 L100.8 285.6 M130.5 298.3 L137.2 285.6" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M73.1 366.3 L73.1 316.4 L119.0 292.3 L164.9 316.4 L164.9 366.3 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="29.0" y="270" width="180" height="116" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="119.0" y="418" text-anchor="middle">天井留</text><text class="mz-rb" x="119.0" y="404.1" text-anchor="middle">てんじょうどめ</text><text class="mz-sm" x="119.0" y="444" text-anchor="middle">天井だけ</text><circle cx="191.0" cy="288" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="191.0" y="294.5" text-anchor="middle">1</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 37.6s)"><rect x="410.0" y="270" width="180" height="116" fill="url(#mzSand)"/><rect x="410.0" y="270" width="180" height="32.5" fill="#b98b52"/><rect x="439.7" y="302.5" width="14.4" height="83.5" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><rect x="545.9" y="302.5" width="14.4" height="83.5" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M439.7 323.4 H454.1 M545.9 323.4 H560.3 M439.7 344.2 H454.1 M545.9 344.2 H560.3 M439.7 365.1 H454.1 M545.9 365.1 H560.3" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M454.1 386 H545.9 V302.5 H454.1 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="410.0" y="270" width="180" height="116" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="500.0" y="418" text-anchor="middle">両側石がき</text><text class="mz-rb" x="466.0" y="404.1" text-anchor="middle">りょう</text><text class="mz-rb" x="483.0" y="404.1" text-anchor="middle">がわ</text><text class="mz-rb" x="500.0" y="404.1" text-anchor="middle">いし</text><text class="mz-sm" x="500.0" y="444" text-anchor="middle">両がわの かべ</text><circle cx="572.0" cy="288" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="572.0" y="294.5" text-anchor="middle">2</text></g><g class="mz-pop fx" style="animation-delay:calc(var(--t) + 38.05s)"><rect x="791.0" y="270" width="180" height="116" fill="url(#mzSand)"/><rect x="791.0" y="270" width="180" height="32.5" fill="#b98b52"/><rect x="926.9" y="302.5" width="44.1" height="83.5" fill="#b98b52"/><rect x="820.7" y="302.5" width="14.4" height="83.5" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><path d="M820.7 323.4 H835.1 M820.7 344.2 H835.1 M820.7 365.1 H835.1" stroke="#6d777e" stroke-width="1.2" fill="none"/><path d="M835.1 386 H926.9 V302.5 H835.1 Z" fill="#ffffff" stroke="#6b5a44" stroke-width="1.6"/><rect x="791.0" y="270" width="180" height="116" fill="none" stroke="#6b5a44" stroke-width="1.8"/><text class="mz-nm" x="881.0" y="418" text-anchor="middle">かた側石がき</text><text class="mz-rb" x="872.5" y="404.1" text-anchor="middle">がわ</text><text class="mz-rb" x="889.5" y="404.1" text-anchor="middle">いし</text><text class="mz-sm" x="881.0" y="444" text-anchor="middle">かた方の かべ</text><circle cx="953.0" cy="288" r="14" fill="#d6392c" stroke="#fff" stroke-width="2.4"/><text class="mz-bg" x="953.0" y="294.5" text-anchor="middle">1</text></g></g><g><rect x="190" y="478" width="636" height="36" rx="10" fill="#ffffff" fill-opacity=".85" stroke="#c8d6de" stroke-width="1.6"/><rect x="220" y="487" width="22" height="18" fill="url(#mzSand)" stroke="#6b5a44" stroke-width="1.4"/><text class="mz-lg" x="370.0" y="503" text-anchor="middle">くずれやすい土（すな・じゃり）</text><text class="mz-rb" x="354.0" y="489.9" text-anchor="middle">つち</text><rect x="548" y="487" width="22" height="18" fill="#b98b52" stroke="#6b5a44" stroke-width="1.4"/><text class="mz-lg" x="602.0" y="503" text-anchor="middle">固い岩</text><text class="mz-rb" x="586.0" y="489.9" text-anchor="middle">かた</text><text class="mz-rb" x="618.0" y="489.9" text-anchor="middle">いわ</text><rect x="700" y="487" width="22" height="18" fill="#98a2a8" stroke="#6b5a44" stroke-width="1.4"/><text class="mz-lg" x="762.0" y="503" text-anchor="middle">つんだ石</text><text class="mz-rb" x="786.0" y="489.9" text-anchor="middle">いし</text></g></svg>`;
+
+const SVG_FUSE=`<svg class="mv" viewBox="0 0 1000 520" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"><defs><pattern id="mfPeb" width="156" height="128" patternUnits="userSpaceOnUse"><rect width="156" height="128" fill="#b9bfc3"/><ellipse cx="143.6" cy="7.6" rx="11.0" ry="8.7" transform="rotate(51 143.6 7.6)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="143.6" cy="135.6" rx="11.0" ry="8.7" transform="rotate(51 143.6 135.6)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="148.4" cy="69.6" rx="10.4" ry="7.7" transform="rotate(136 148.4 69.6)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="-7.6" cy="69.6" rx="10.4" ry="7.7" transform="rotate(136 -7.6 69.6)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="39.6" cy="87.6" rx="9.9" ry="6.4" transform="rotate(121 39.6 87.6)" fill="#9ea5aa" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="40.9" cy="120.7" rx="9.5" ry="7.2" transform="rotate(64 40.9 120.7)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="40.9" cy="-7.3" rx="9.5" ry="7.2" transform="rotate(64 40.9 -7.3)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="80.0" cy="86.3" rx="10.6" ry="6.6" transform="rotate(139 80.0 86.3)" fill="#b3b9bd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="134.9" cy="58.5" rx="11.3" ry="6.7" transform="rotate(145 134.9 58.5)" fill="#c7ccd0" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="97.2" cy="85.4" rx="11.3" ry="7.2" transform="rotate(133 97.2 85.4)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="65.2" cy="38.1" rx="12.5" ry="9.2" transform="rotate(77 65.2 38.1)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="137.9" cy="86.1" rx="12.5" ry="9.3" transform="rotate(146 137.9 86.1)" fill="#9ea5aa" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="147.3" cy="102.1" rx="12.0" ry="8.3" transform="rotate(133 147.3 102.1)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="-8.7" cy="102.1" rx="12.0" ry="8.3" transform="rotate(133 -8.7 102.1)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="81.0" cy="21.7" rx="10.5" ry="6.1" transform="rotate(146 81.0 21.7)" fill="#a7aeb2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="26.3" cy="70.0" rx="11.7" ry="9.3" transform="rotate(24 26.3 70.0)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="28.5" cy="7.3" rx="11.6" ry="7.4" transform="rotate(3 28.5 7.3)" fill="#9ea5aa" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="28.5" cy="135.3" rx="11.6" ry="7.4" transform="rotate(3 28.5 135.3)" fill="#9ea5aa" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="57.5" cy="55.0" rx="12.5" ry="8.2" transform="rotate(70 57.5 55.0)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="38.2" cy="53.5" rx="10.6" ry="7.1" transform="rotate(123 38.2 53.5)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="107.7" cy="9.6" rx="9.6" ry="6.6" transform="rotate(142 107.7 9.6)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="107.7" cy="137.6" rx="9.6" ry="6.6" transform="rotate(142 107.7 137.6)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="12.5" cy="10.3" rx="12.2" ry="7.3" transform="rotate(107 12.5 10.3)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="12.5" cy="138.3" rx="12.2" ry="7.3" transform="rotate(107 12.5 138.3)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="48.2" cy="41.4" rx="11.0" ry="7.7" transform="rotate(149 48.2 41.4)" fill="#b3b9bd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="90.6" cy="37.8" rx="11.0" ry="7.7" transform="rotate(42 90.6 37.8)" fill="#9ea5aa" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="26.5" cy="42.4" rx="12.2" ry="9.1" transform="rotate(98 26.5 42.4)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="153.5" cy="119.6" rx="9.2" ry="6.7" transform="rotate(68 153.5 119.6)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="153.5" cy="-8.4" rx="9.2" ry="6.7" transform="rotate(68 153.5 -8.4)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="-2.5" cy="119.6" rx="9.2" ry="6.7" transform="rotate(68 -2.5 119.6)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="-2.5" cy="-8.4" rx="9.2" ry="6.7" transform="rotate(68 -2.5 -8.4)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="55.4" cy="120.0" rx="10.6" ry="6.8" transform="rotate(129 55.4 120.0)" fill="#a7aeb2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="55.4" cy="-8.0" rx="10.6" ry="6.8" transform="rotate(129 55.4 -8.0)" fill="#a7aeb2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="31.1" cy="103.0" rx="11.5" ry="7.8" transform="rotate(164 31.1 103.0)" fill="#c7ccd0" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="154.1" cy="56.3" rx="11.2" ry="8.4" transform="rotate(32 154.1 56.3)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="-1.9" cy="56.3" rx="11.2" ry="8.4" transform="rotate(32 -1.9 56.3)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="138.7" cy="118.8" rx="11.2" ry="8.5" transform="rotate(129 138.7 118.8)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="138.7" cy="-9.2" rx="11.2" ry="8.5" transform="rotate(129 138.7 -9.2)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="60.5" cy="87.5" rx="10.3" ry="7.1" transform="rotate(3 60.5 87.5)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="51.5" cy="70.9" rx="12.2" ry="7.9" transform="rotate(143 51.5 70.9)" fill="#a7aeb2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="7.3" cy="101.5" rx="10.9" ry="6.8" transform="rotate(116 7.3 101.5)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="163.3" cy="101.5" rx="10.9" ry="6.8" transform="rotate(116 163.3 101.5)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="19.7" cy="54.9" rx="12.2" ry="7.3" transform="rotate(158 19.7 54.9)" fill="#9ea5aa" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="10.5" cy="71.3" rx="12.5" ry="9.0" transform="rotate(125 10.5 71.3)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="166.5" cy="71.3" rx="12.5" ry="9.0" transform="rotate(125 166.5 71.3)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="136.8" cy="25.3" rx="10.7" ry="6.9" transform="rotate(16 136.8 25.3)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="129.9" cy="104.8" rx="12.2" ry="7.6" transform="rotate(132 129.9 104.8)" fill="#b3b9bd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="128.3" cy="39.5" rx="11.9" ry="7.0" transform="rotate(118 128.3 39.5)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="9.4" cy="39.2" rx="12.2" ry="9.3" transform="rotate(161 9.4 39.2)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="165.4" cy="39.2" rx="12.2" ry="9.3" transform="rotate(161 165.4 39.2)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="108.7" cy="106.4" rx="11.3" ry="7.8" transform="rotate(49 108.7 106.4)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="67.3" cy="5.7" rx="11.8" ry="8.4" transform="rotate(118 67.3 5.7)" fill="#b8bec2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="67.3" cy="133.7" rx="11.8" ry="8.4" transform="rotate(118 67.3 133.7)" fill="#b8bec2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="96.8" cy="58.0" rx="12.6" ry="7.7" transform="rotate(67 96.8 58.0)" fill="#9ea5aa" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="126.5" cy="72.8" rx="12.4" ry="9.0" transform="rotate(64 126.5 72.8)" fill="#c7ccd0" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="0.3" cy="86.0" rx="9.2" ry="6.3" transform="rotate(26 0.3 86.0)" fill="#c7ccd0" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="156.3" cy="86.0" rx="9.2" ry="6.3" transform="rotate(26 156.3 86.0)" fill="#c7ccd0" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="80.1" cy="118.5" rx="11.9" ry="9.0" transform="rotate(26 80.1 118.5)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="80.1" cy="-9.5" rx="11.9" ry="9.0" transform="rotate(26 80.1 -9.5)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="65.5" cy="105.5" rx="9.5" ry="7.4" transform="rotate(125 65.5 105.5)" fill="#c7ccd0" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="90.8" cy="7.3" rx="11.7" ry="7.8" transform="rotate(103 90.8 7.3)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="90.8" cy="135.3" rx="11.7" ry="7.8" transform="rotate(103 90.8 135.3)" fill="#aeb4b8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="99.5" cy="120.9" rx="9.4" ry="7.2" transform="rotate(135 99.5 120.9)" fill="#b8bec2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="99.5" cy="-7.1" rx="9.4" ry="7.2" transform="rotate(135 99.5 -7.1)" fill="#b8bec2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="17.0" cy="26.1" rx="11.0" ry="8.5" transform="rotate(82 17.0 26.1)" fill="#b8bec2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="124.7" cy="6.3" rx="10.2" ry="7.7" transform="rotate(35 124.7 6.3)" fill="#b3b9bd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="124.7" cy="134.3" rx="10.2" ry="7.7" transform="rotate(35 124.7 134.3)" fill="#b3b9bd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="107.5" cy="73.9" rx="10.6" ry="7.0" transform="rotate(117 107.5 73.9)" fill="#c7ccd0" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="85.6" cy="70.5" rx="12.5" ry="10.0" transform="rotate(136 85.6 70.5)" fill="#b8bec2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="51.3" cy="6.0" rx="12.5" ry="8.6" transform="rotate(4 51.3 6.0)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="51.3" cy="134.0" rx="12.5" ry="8.6" transform="rotate(4 51.3 134.0)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="109.2" cy="42.5" rx="10.0" ry="6.5" transform="rotate(4 109.2 42.5)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="119.0" cy="120.1" rx="10.9" ry="7.8" transform="rotate(168 119.0 120.1)" fill="#b8bec2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="119.0" cy="-7.9" rx="10.9" ry="7.8" transform="rotate(168 119.0 -7.9)" fill="#b8bec2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="47.7" cy="105.2" rx="9.8" ry="7.1" transform="rotate(142 47.7 105.2)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="90.8" cy="102.0" rx="12.0" ry="7.2" transform="rotate(15 90.8 102.0)" fill="#a7aeb2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="70.3" cy="72.5" rx="11.1" ry="7.3" transform="rotate(24 70.3 72.5)" fill="#b3b9bd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="57.4" cy="22.1" rx="11.7" ry="7.0" transform="rotate(69 57.4 22.1)" fill="#9ea5aa" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="116.0" cy="26.5" rx="10.4" ry="6.4" transform="rotate(14 116.0 26.5)" fill="#9ea5aa" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="120.1" cy="54.8" rx="11.8" ry="6.8" transform="rotate(7 120.1 54.8)" fill="#b3b9bd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="80.5" cy="56.9" rx="11.7" ry="9.1" transform="rotate(97 80.5 56.9)" fill="#b3b9bd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="18.0" cy="122.2" rx="11.2" ry="7.4" transform="rotate(8 18.0 122.2)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="18.0" cy="-5.8" rx="11.2" ry="7.4" transform="rotate(8 18.0 -5.8)" fill="#c5cacd" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="17.6" cy="87.5" rx="9.2" ry="6.0" transform="rotate(77 17.6 87.5)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="149.2" cy="39.6" rx="10.0" ry="7.1" transform="rotate(179 149.2 39.6)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="-6.8" cy="39.6" rx="10.0" ry="7.1" transform="rotate(179 -6.8 39.6)" fill="#bfc4c8" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="37.5" cy="22.0" rx="11.8" ry="8.7" transform="rotate(149 37.5 22.0)" fill="#b8bec2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="1.2" cy="24.3" rx="9.9" ry="5.9" transform="rotate(30 1.2 24.3)" fill="#a7aeb2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="157.2" cy="24.3" rx="9.9" ry="5.9" transform="rotate(30 157.2 24.3)" fill="#a7aeb2" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="116.3" cy="90.5" rx="11.7" ry="8.6" transform="rotate(120 116.3 90.5)" fill="#c7ccd0" stroke="#8a9196" stroke-width="1.1"/><ellipse cx="100.5" cy="25.6" rx="12.4" ry="8.7" transform="rotate(178 100.5 25.6)" fill="#b3b9bd" stroke="#8a9196" stroke-width="1.1"/></pattern><pattern id="mfHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="12" height="12" fill="#fbe4ea"/><rect width="4" height="12" fill="#f0b3c5"/></pattern></defs><rect x="0" y="0" width="1000" height="520" fill="#f4f8fa"/><g class="mf-sc fx" style="animation-delay:calc(var(--t) + 0.2s), calc(var(--t) + 11.4s)"><text class="mf-ti" x="500" y="54" text-anchor="middle">ふせこしって、なに？</text><rect x="90" y="118" width="820" height="292" fill="#eef4f7" stroke="#5c5750" stroke-width="1.8"/><path d="M90 176 L330 176 L372 228 L628 228 L670 176 L910 176 L910 410 L90 410 Z" fill="#ddc9a4" stroke="#5c5750" stroke-width="2"/><path d="M372 228 H628 L670 176" fill="none" stroke="none"/><rect x="372" y="228" width="256" height="34" fill="url(#mfPeb)"/><path d="M347.8 198 L652.2 198 L628 228 L372 228 Z" fill="#a9c3c8" stroke="#6f9aa8" stroke-width="1.6"/><text class="mf-nm" x="420" y="216" text-anchor="middle">川</text><text class="mf-rb" x="420.0" y="198.8" text-anchor="middle">かわ</text><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 1.2s)"><path d="M92 252 L330 252 L392 302 L608 302 L670 252 L908 252" fill="none" stroke="#4d7f91" stroke-width="26" stroke-linejoin="round" stroke-linecap="butt"/><path d="M92 252 L330 252 L392 302 L608 302 L670 252 L908 252" fill="none" stroke="#7fa8b5" stroke-width="20" stroke-linejoin="round" stroke-linecap="butt"/><path class="mf-flow" d="M92 252 L330 252 L392 302 L608 302 L670 252 L908 252" fill="none" stroke="#e8f3f6" stroke-width="5" stroke-dasharray="16 24" stroke-linecap="round"/></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 2.6s)"><path d="M250 252 L233 241 L233 263 Z" fill="#1b4a68" stroke="#fff" stroke-width="1.8"/><path d="M450 302 L433 291 L433 313 Z" fill="#1b4a68" stroke="#fff" stroke-width="1.8"/><path d="M770 252 L753 241 L753 263 Z" fill="#1b4a68" stroke="#fff" stroke-width="1.8"/></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 3.4s)"><path d="M170 252 V212" stroke="#5c5750" stroke-width="2" fill="none"/><text class="mf-nm" x="170" y="204" text-anchor="middle">用水路</text><text class="mf-rb" x="170.0" y="186.8" text-anchor="middle">ようすいろ</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 4.6s)"><path d="M745 320 L618 306" stroke="#d6392c" stroke-width="2" fill="none"/><rect x="700" y="298" width="176" height="36" rx="9" fill="#fdecea" stroke="#d6392c" stroke-width="2"/><text class="mf-msg" x="788" y="323" text-anchor="middle">川の下をくぐる</text><text class="mf-rb" x="728.0" y="306.6" text-anchor="middle">かわ</text><text class="mf-rb" x="768.0" y="306.6" text-anchor="middle">した</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 6.2s)"><path class="mf-wv" d="M404 232 L404 256 M397 248 L404 258 L411 248" stroke="#4d7f91" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round" style="animation-delay:calc(var(--t) + 6.4s)"/><path class="mf-wv" d="M450 232 L450 256 M443 248 L450 258 L457 248" stroke="#4d7f91" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round" style="animation-delay:calc(var(--t) + 6.7s)"/><path class="mf-wv" d="M552 232 L552 256 M545 248 L552 258 L559 248" stroke="#4d7f91" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round" style="animation-delay:calc(var(--t) + 7.0s)"/><path class="mf-wv" d="M598 232 L598 256 M591 248 L598 258 L605 248" stroke="#4d7f91" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round" style="animation-delay:calc(var(--t) + 7.3s)"/><rect x="268" y="342" width="464" height="58" rx="10" fill="#ffffff" fill-opacity=".93" stroke="#3f7183" stroke-width="2.2"/><text class="mf-sm3" x="500" y="366" text-anchor="middle">この川は　大雨のときだけ　水が　流れる</text><text class="mf-rb" x="381.0" y="352.1" text-anchor="middle">かわ</text><text class="mf-rb" x="440.5" y="352.1" text-anchor="middle">おおあめ</text><text class="mf-rb" x="568.0" y="352.1" text-anchor="middle">みず</text><text class="mf-rb" x="619.0" y="352.1" text-anchor="middle">なが</text><text class="mf-sm3" x="500" y="390" text-anchor="middle">ふだんは　かわいた　川原。だから　川底を　ほれた</text><text class="mf-rb" x="483.0" y="376.1" text-anchor="middle">かわら</text><text class="mf-rb" x="602.0" y="376.1" text-anchor="middle">かわぞこ</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 8.8s)"><path d="M500 122 V338" stroke="#d6392c" stroke-width="3" stroke-dasharray="11 8" fill="none"/><rect x="358" y="96" width="284" height="34" rx="9" fill="#fff" stroke="#d6392c" stroke-width="2"/><text class="mf-msg" x="500" y="120" text-anchor="middle">この線で切ったところ</text><text class="mf-rb" x="450.0" y="103.6" text-anchor="middle">せん</text><text class="mf-rb" x="490.0" y="103.6" text-anchor="middle">き</text></g></g><g class="mf-sc fx" style="animation-delay:calc(var(--t) + 12.2s), calc(var(--t) + 22.6s)"><text class="mf-ti" x="500" y="54" text-anchor="middle">川底を　ななめに　ほる</text><text class="mf-rb" x="383.0" y="32.7" text-anchor="middle">かわぞこ</text></g><g class="mf-sc fx" style="animation-delay:calc(var(--t) + 12.2s), calc(var(--t) + 22.6s)"><circle cx="311" cy="54" r="19" fill="#d6392c" stroke="#fff" stroke-width="2.6"/><text class="mf-bg" x="311" y="62" text-anchor="middle">1</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 12.2s)"><rect x="190.0" y="152.0" width="620.0" height="252.0" fill="url(#mfPeb)" stroke="#5c5750" stroke-width="2"/><path d="M190.0 152.0 H810.0" stroke="#5c5750" stroke-width="3"/><text class="mf-sm" x="232" y="146" text-anchor="middle">川底</text><text class="mf-rb" x="232.0" y="131.2" text-anchor="middle">かわぞこ</text></g><g class="mf-gone fx" style="animation-delay:calc(var(--t) + 12.8s), calc(var(--t) + 17.0s)"><path d="M360.0 152.0 L640.0 152.0 L585.0 382.0 L415.0 382.0 Z" fill="url(#mfHatch)" stroke="#d6392c" stroke-width="2.6" stroke-dasharray="9 6"/><text class="mf-msg" x="500" y="270" text-anchor="middle">ここを　ほり取る</text><text class="mf-rb" x="550.0" y="253.6" text-anchor="middle">と</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 16.8s)"><path d="M360.0 152.0 L640.0 152.0 L585.0 382.0 L415.0 382.0 Z" fill="#f4f8fa" stroke="#5c5750" stroke-width="2.2"/></g><g class="mf-sc fx" style="animation-delay:calc(var(--t) + 18.0s), calc(var(--t) + 22.4s)"><path d="M360.0 138 L640.0 138" stroke="#5c5750" stroke-width="2.2" fill="none"/><path d="M360.0 138 L374.0 145.0 L374.0 131.0 Z" fill="#5c5750"/><path d="M640.0 138 L626.0 145.0 L626.0 131.0 Z" fill="#5c5750"/><text class="mf-sm" x="500" y="126" text-anchor="middle">はば　5〜6m</text><path d="M316 152.0 L316 382.0" stroke="#5c5750" stroke-width="2.2" fill="none"/><path d="M316 152.0 L309.0 166.0 L323.0 166.0 Z" fill="#5c5750"/><path d="M316 382.0 L309.0 368.0 L323.0 368.0 Z" fill="#5c5750"/><text class="mf-sm" x="268" y="260" text-anchor="middle">深さ</text><text class="mf-rb" x="259.0" y="245.2" text-anchor="middle">ふか</text><text class="mf-sm" x="268" y="284" text-anchor="middle">5〜6m</text></g><g class="mf-sc fx" style="animation-delay:calc(var(--t) + 23.2s), calc(var(--t) + 35.6s)"><text class="mf-ti" x="500" y="54" text-anchor="middle">木わくをしき、切り石を　積み上げる</text><text class="mf-rb" x="292.0" y="32.7" text-anchor="middle">き</text><text class="mf-rb" x="474.0" y="32.7" text-anchor="middle">き</text><text class="mf-rb" x="526.0" y="32.7" text-anchor="middle">いし</text><text class="mf-rb" x="604.0" y="32.7" text-anchor="middle">つ</text><text class="mf-rb" x="656.0" y="32.7" text-anchor="middle">あ</text></g><g class="mf-sc fx" style="animation-delay:calc(var(--t) + 23.2s), calc(var(--t) + 35.6s)"><circle cx="233" cy="54" r="19" fill="#d6392c" stroke="#fff" stroke-width="2.6"/><text class="mf-bg" x="233" y="62" text-anchor="middle">2</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 23.7s)"><path d="M412 368 L588 368 L585 382 L415 382 Z" fill="#c99a5e" stroke="#8a6636" stroke-width="1.8"/><path d="M448 368 V382 M500 368 V382 M552 368 V382" stroke="#8a6636" stroke-width="1.4" fill="none"/></g><g class="mf-sc fx" style="animation-delay:calc(var(--t) + 24.4s), calc(var(--t) + 35.4s)"><path d="M406 375 L340 375" stroke="#5c5750" stroke-width="2" fill="none"/><text class="mf-sm" x="300" y="381" text-anchor="middle">木わく</text><text class="mf-rb" x="282.0" y="366.2" text-anchor="middle">き</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 24.6s)"><path class="mf-blk" d="M424 348 L500 348 L500 368 L426.9 368 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 24.8s)"/><path class="mf-blk" d="M500 348 L576 348 L573.1 368 L500 368 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 25.32s)"/><path class="mf-blk" d="M436 324 L460 324 L460 348 L436 348 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 25.84s)"/><path class="mf-blk" d="M540 324 L564 324 L564 348 L540 348 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 26.36s)"/><path class="mf-blk" d="M436 300 L460 300 L460 324 L436 324 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 26.88s)"/><path class="mf-blk" d="M540 300 L564 300 L564 324 L540 324 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 27.4s)"/><path class="mf-blk" d="M436 300 L468 273 L480 287 L460 300 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 27.92s)"/><path class="mf-blk" d="M564 300 L532 273 L520 287 L540 300 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 28.44s)"/><path class="mf-blk" d="M468 273 L500 246 L500 274 L480 287 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 28.96s)"/><path class="mf-blk" d="M532 273 L500 246 L500 274 L520 287 Z" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 29.48s)"/><path class="mf-blk" d="M460 348 L460 300 L500 274 L540 300 L540 348 Z" fill="#ffffff" stroke="#6b7379" stroke-width="1.8" style="animation-delay:calc(var(--t) + 30.0s)"/></g><g class="mf-sc fx" style="animation-delay:calc(var(--t) + 30.8s), calc(var(--t) + 35.4s)"><path d="M660 288 L572 300" stroke="#5c5750" stroke-width="2" fill="none"/><rect x="656" y="238" width="152" height="76" rx="9" fill="#fff" fill-opacity=".92" stroke="#6b7379" stroke-width="2"/><text class="mf-sm2" x="732" y="264" text-anchor="middle">那珂川の上流</text><text class="mf-rb" x="708.0" y="250.9" text-anchor="middle">なかがわ</text><text class="mf-rb" x="764.0" y="250.9" text-anchor="middle">じょうりゅう</text><text class="mf-sm2" x="732" y="288" text-anchor="middle">から運ばれた</text><text class="mf-rb" x="724.0" y="274.9" text-anchor="middle">はこ</text><text class="mf-nm" x="732" y="308" text-anchor="middle">切り石</text><text class="mf-rb" x="711.0" y="290.8" text-anchor="middle">き</text><text class="mf-rb" x="753.0" y="290.8" text-anchor="middle">いし</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 36.2s)"><text class="mf-ti" x="500" y="54" text-anchor="middle">川原の石を　もとに　うめもどす</text><text class="mf-rb" x="331.0" y="32.7" text-anchor="middle">かわら</text><text class="mf-rb" x="396.0" y="32.7" text-anchor="middle">いし</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 36.2s)"><circle cx="259" cy="54" r="19" fill="#d6392c" stroke="#fff" stroke-width="2.6"/><text class="mf-bg" x="259" y="62" text-anchor="middle">3</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 36.6s)"><path d="M360 152 L500 152 L500 246 L436 300 L436 348 L424 348 L426.9 368 L412 368 L415 382 Z" fill="url(#mfPeb)" stroke="none"/><path d="M640 152 L500 152 L500 246 L564 300 L564 348 L576 348 L573.1 368 L588 368 L585 382 Z" fill="url(#mfPeb)" stroke="none"/></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 38.2s)"><path d="M360.0 152.0 L640.0 152.0 L585.0 382.0 L415.0 382.0 Z" fill="none" stroke="#4b5257" stroke-width="2.4" stroke-dasharray="8 7"/></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 39.4s)"><path d="M460 348 L460 300 L500 274 L540 300 L540 348 Z" fill="#7fa8b5" stroke="#3f7183" stroke-width="1.8"/><path class="mf-wv" d="M474 296 Q487 291 500 296 Q513 301 526 296" fill="none" stroke="#eaf5f8" stroke-width="3.4" stroke-linecap="round" style="animation-delay:calc(var(--t) + 39.8s)"/><path class="mf-wv" d="M474 312 Q487 307 500 312 Q513 317 526 312" fill="none" stroke="#eaf5f8" stroke-width="3.4" stroke-linecap="round" style="animation-delay:calc(var(--t) + 40.15s)"/><path class="mf-wv" d="M474 328 Q487 323 500 328 Q513 333 526 328" fill="none" stroke="#eaf5f8" stroke-width="3.4" stroke-linecap="round" style="animation-delay:calc(var(--t) + 40.5s)"/></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 40.6s)"><path d="M614 292 L544 306" stroke="#3f7183" stroke-width="2.2" fill="none"/><rect x="612" y="250" width="192" height="58" rx="9" fill="#eaf3f6" stroke="#3f7183" stroke-width="2.2"/><text class="mf-sm3" x="708" y="276" text-anchor="middle">用水路の水が</text><text class="mf-rb" x="682.5" y="262.1" text-anchor="middle">ようすいろ</text><text class="mf-rb" x="733.5" y="262.1" text-anchor="middle">みず</text><text class="mf-sm3" x="708" y="300" text-anchor="middle">ここを通る</text><text class="mf-rb" x="725.0" y="286.1" text-anchor="middle">とお</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 41.8s)"><rect x="190.0" y="112" width="620.0" height="40" fill="#a9c3c8" stroke="#6f9aa8" stroke-width="1.8"/><path class="mf-flow" d="M200.0 132 H800.0" fill="none" stroke="#e8f3f6" stroke-width="5" stroke-dasharray="16 24" stroke-linecap="round"/><text class="mf-sm" x="262" y="139" text-anchor="middle">川の水</text><text class="mf-rb" x="244.0" y="124.2" text-anchor="middle">かわ</text><text class="mf-rb" x="280.0" y="124.2" text-anchor="middle">みず</text></g><g class="mf-pop fx" style="animation-delay:calc(var(--t) + 43.0s)"><rect x="250.0" y="420" width="500" height="36" rx="9" fill="#eef4f7" stroke="#9fc0d0" stroke-width="1.8"/><text class="mf-msg2" x="500" y="444" text-anchor="middle">外からは　見えないが、川の下を　水が　通っている</text><text class="mf-rb" x="281.5" y="428.4" text-anchor="middle">そと</text><text class="mf-rb" x="376.5" y="428.4" text-anchor="middle">み</text><text class="mf-rb" x="490.5" y="428.4" text-anchor="middle">かわ</text><text class="mf-rb" x="528.5" y="428.4" text-anchor="middle">した</text><text class="mf-rb" x="585.5" y="428.4" text-anchor="middle">みず</text><text class="mf-rb" x="642.5" y="428.4" text-anchor="middle">とお</text></g><g><rect x="248" y="474" width="504" height="36" rx="10" fill="#ffffff" fill-opacity=".85" stroke="#c8d6de" stroke-width="1.6"/><rect x="276" y="483" width="24" height="18" fill="url(#mfPeb)" stroke="#5c5750" stroke-width="1.4"/><text class="mf-lg" x="340.0" y="499" text-anchor="middle">川原の石</text><text class="mf-rb" x="324.0" y="485.9" text-anchor="middle">かわら</text><text class="mf-rb" x="364.0" y="485.9" text-anchor="middle">いし</text><rect x="452" y="483" width="24" height="18" fill="#e3e7e9" stroke="#6b7379" stroke-width="1.4"/><text class="mf-lg" x="508.0" y="499" text-anchor="middle">切り石</text><text class="mf-rb" x="492.0" y="485.9" text-anchor="middle">き</text><text class="mf-rb" x="524.0" y="485.9" text-anchor="middle">いし</text><rect x="620" y="483" width="24" height="18" fill="#c99a5e" stroke="#8a6636" stroke-width="1.4"/><text class="mf-lg" x="676.0" y="499" text-anchor="middle">木わく</text><text class="mf-rb" x="660.0" y="485.9" text-anchor="middle">き</text></g></svg>`;
+
+SECTIONS.push({
+ tab:'しりょう',
+ ask:'うごく'+R('絵','え')+'で、'+R('那須野原','なすのがはら')+'と'+R('工事','こうじ')+'の ひみつを '+R('見','み')+'てみよう。',
+ media:[
+  {label:R('原野','げんや')+'ができるまで',
+   svg:SVG_GENYA,
+   chapters:[
+    {at:0,  wait:8,  cap:'むかしの'+R('那須野原','なすのがはら')+'は、'+R('山','やま')+'にかこまれた、'+R('湖','みずうみ')+'のような'+R('土地','とち')+'でした。'},
+    {at:8,  wait:9,  cap:R('山','やま')+'がふん'+R('火','か')+'して、ふき'+R('出','だ')+'した'+R('火山灰','かざんばい')+'や'+R('軽石','かるいし')+'などで、'+R('湖','みずうみ')+'のような'+R('土地','とち')+'がうめつくされていきます。'},
+    {at:17, wait:15, cap:'そのあと、'+R('長','なが')+'い'+R('年月','ねんげつ')+'のあいだに'+R('川','かわ')+'のはんらんが'+R('何度','なんど')+'もおこり、'+R('火山灰','かざんばい')+'や'+R('軽石','かるいし')+'がけずられて、そこに'+R('石','いし')+'や'+R('砂','すな')+'がたまり'+R('続','つづ')+'けました。'},
+    {at:32, wait:12, cap:'こうして'+R('那須野原','なすのがはら')+'は、'+R('石','いし')+'ころだらけですきまの'+R('多','おお')+'い、'+R('水','みず')+'がしみこみやすい'+R('土地','とち')+'になったのです。'}
+   ]},
+
+  {label:'ずい'+R('道','どう')+'の'+R('中','なか')+'の'+R('石組','いしぐ')+'みのくふう',
+   svg:SVG_ZUIDO,
+   chapters:[
+    {at:0,  wait:12, cap:'ずい'+R('道','どう')+'は、'+R('山','やま')+'の'+R('中','なか')+'をほって'+R('作','つく')+'ったトンネルです。'+R('土','つち')+'がくずれてこないように、'+R('内','うち')+'がわに'+R('石','いし')+'をつみました。'},
+    {at:12, wait:13, cap:R('天井','てんじょう')+'の'+R('土','つち')+'がくずれやすいときは、'+R('天井','てんじょう')+'を'+R('三角','さんかく')+'にして'+R('石','いし')+'をつみます。まわりの'+R('土','つち')+'のかたさで、'+R('石','いし')+'をつむところがかわります。'},
+    {at:25, wait:10, cap:R('天井','てんじょう')+'が'+R('固','かた')+'い'+R('岩','いわ')+'のときは、'+R('天井','てんじょう')+'に'+R('石','いし')+'をつむ'+R('必要','ひつよう')+'がありません。くずれやすいかべにだけ'+R('石','いし')+'をつみます。'},
+    {at:35, wait:12, cap:R('石','いし')+'のつみ'+R('方','かた')+'は6'+R('通','とお')+'り。'+R('土','つち')+'のようすに'+R('合','あ')+'わせて、'+R('必要','ひつよう')+'なところにだけ'+R('石','いし')+'をつむ。これが、'+R('工事','こうじ')+'を'+R('早','はや')+'く'+R('進','すす')+'めるためのくふうでした。'}
+   ]},
+
+  {label:'ふせこしの'+R('工事','こうじ')+'の'+R('方法','ほうほう'),
+   svg:SVG_FUSE,
+   chapters:[
+    {at:0,  wait:12, cap:R('用水路','ようすいろ')+'が'+R('川','かわ')+'にぶつかるところでは、'+R('川','かわ')+'の'+R('下','した')+'をくぐらせました。これを「ふせこし」といいます。この'+R('川','かわ')+'は'+R('大雨','おおあめ')+'のときだけ'+R('水','みず')+'が'+R('流','なが')+'れ、ふだんは'+R('石','いし')+'やすなの'+R('下','した')+'を'+R('水','みず')+'が'+R('通','とお')+'るので、'+R('川底','かわぞこ')+'をほることができたのです。'+R('赤','あか')+'い'+R('線','せん')+'で'+R('切','き')+'った'+R('断面','だんめん')+'で、'+R('工事','こうじ')+'のようすを'+R('見','み')+'ていきましょう。'},
+    {at:12, wait:11, cap:'まず、'+R('川底','かわぞこ')+'をななめにほり'+R('下','さ')+'げます。はばも'+R('深','ふか')+'さも5〜6mありました。'},
+    {at:23, wait:13, cap:'ほった'+R('底','そこ')+'に'+R('木','き')+'わくをしき、その'+R('上','うえ')+'に'+R('切','き')+'り'+R('石','いし')+'を'+R('積','つ')+'み'+R('上','あ')+'げます。'+R('切','き')+'り'+R('石','いし')+'は'+R('那珂川','なかがわ')+'の'+R('上流','じょうりゅう')+'から'+R('運','はこ')+'ばれてきました。'},
+    {at:36, wait:12, cap:'さいごに、'+R('川原','かわら')+'の'+R('石','いし')+'をもとどおりうめもどします。'+R('青','あお')+'いところが'+R('用水路','ようすいろ')+'の'+R('中','なか')+'で、ここを'+R('水','みず')+'が'+R('流','なが')+'れています。'+R('工事','こうじ')+'が'+R('終','お')+'わると、'+R('川','かわ')+'の'+R('下','した')+'を'+R('用水路','ようすいろ')+'が'+R('通','とお')+'っていることは、'+R('外','そと')+'からは'+R('見','み')+'えません。'}
+   ]}
+ ]
+});
+
 /* ══════════════════════════════════════════════════════════
    ▲ 書きかえるのはここまで ▲
    ══════════════════════════════════════════════════════════ */
@@ -1156,7 +1648,7 @@ const shuffle=a=>{const b=a.slice();for(let n=b.length-1;n>0;n--){const m=Math.f
 
 /* タブ */
 el('tabs').innerHTML=SECTIONS.map((s,n)=>
- '<button class="tab'+(n===0?' on':'')+'" data-s="'+n+'"><span class="no">'+(n+1)+'</span>'+s.tab+'</button>').join('');
+ '<button class="tab'+(n===0?' on':'')+(s.media?' shiryo':'')+'" data-s="'+n+'"><span class="no">'+(n+1)+'</span>'+s.tab+'</button>').join('');
 el('tabs').addEventListener('click',e=>{
   const b=e.target.closest('.tab'); if(!b) return;
   sec=+b.dataset.s; setIdx=0;
@@ -1184,6 +1676,9 @@ function drawBoard(cards){
 function loadSection(){
   const S=SECTIONS[sec];
   el('ask').innerHTML=S.ask;
+  document.querySelector('main').classList.toggle('solo',!!S.media);
+  if(S.media){ showMovieSection(S); return; }   /* しりょうタブ */
+  stopMovie(); vMovie.classList.remove('on');
   el('hint').innerHTML=S.hint;
   drawBoard(S.cards);
   el('subtabs').innerHTML=S.sets.map((s,n)=>
@@ -1260,6 +1755,87 @@ function showExplain(k){
   el('exBody').innerHTML=d.body.map(p=>'<p>'+p+'</p>').join('');
   el('exBody').scrollTop=0;
 }
+
+/* ══════════ しりょうタブ：うごく絵 ══════════ */
+const vMovie=el('vMovie'), stage=el('stage');
+let MV=null, mvI=0, mvTimer=null, mvPlaying=false, mvDone=false, mvRemain=0, mvFrom=0;
+
+function showMovieSection(S){
+  closeZoom();
+  el('toggle').style.visibility='hidden';
+  el('vExplain').classList.remove('on');
+  vQuiz.classList.remove('on');
+  vMovie.classList.add('on');
+  el('msubtabs').innerHTML=S.media.map((m,n)=>
+   '<button class="st'+(n===0?' on':'')+'" data-i="'+n+'">'+m.label+'</button>').join('');
+  loadMovie(0);
+}
+el('msubtabs').addEventListener('click',e=>{
+  const b=e.target.closest('.st'); if(!b) return;
+  document.querySelectorAll('#msubtabs .st').forEach(x=>x.classList.toggle('on',x===b));
+  loadMovie(+b.dataset.i);
+});
+function loadMovie(n){
+  stopMovie(); mvDone=false;
+  MV=SECTIONS[sec].media[n];
+  stage.innerHTML=MV.svg;
+  el('mdots').innerHTML=MV.chapters.map(()=>'<span class="mdot"></span>').join('');
+  showScene(0);
+  playMovie();
+}
+/* そのばめんの先頭まで、アニメの時計を進める（--t にマイナスのちえんを入れる） */
+function seekTo(k){
+  const g=stage.firstElementChild; if(!g) return;
+  g.classList.remove('run','paused');
+  void g.getBoundingClientRect();
+  g.style.setProperty('--t','-'+MV.chapters[k].at+'s');
+  g.classList.add('run');
+  if(!mvPlaying) g.classList.add('paused');
+}
+function showScene(k){
+  mvI=k; seekTo(k);
+  mvRemain=MV.chapters[k].wait*1000; mvFrom=Date.now();
+  [...el('mdots').children].forEach((d,n)=>d.classList.toggle('on',n<=k));
+  const cap=el('mcap');
+  cap.innerHTML=MV.chapters[k].cap;
+  cap.classList.remove('in'); void cap.offsetWidth; cap.classList.add('in');
+  el('mstep').textContent=(k+1)+' / '+MV.chapters.length;
+  el('mprev').disabled=(k===0);
+  el('mnext').disabled=(k===MV.chapters.length-1);
+  setPlayBtn();
+}
+function playMovie(){
+  if(!MV) return;
+  if(mvDone){ mvDone=false; mvPlaying=true; showScene(0); }
+  mvPlaying=true;
+  const g=stage.firstElementChild; if(g) g.classList.remove('paused');
+  mvFrom=Date.now();
+  clearTimeout(mvTimer); mvTimer=setTimeout(nextChap,mvRemain);
+  setPlayBtn();
+}
+function nextChap(){
+  if(mvI<MV.chapters.length-1){
+    showScene(mvI+1);
+    clearTimeout(mvTimer); mvTimer=setTimeout(nextChap,mvRemain);
+  }else{
+    mvPlaying=false; mvDone=true;
+    const g=stage.firstElementChild; if(g) g.classList.add('paused');
+    setPlayBtn();
+  }
+}
+function stopMovie(){
+  if(mvPlaying) mvRemain=Math.max(400,mvRemain-(Date.now()-mvFrom));
+  mvPlaying=false; clearTimeout(mvTimer);
+  const g=stage&&stage.firstElementChild; if(g) g.classList.add('paused');
+  setPlayBtn();
+}
+function setPlayBtn(){
+  if(!MV) return;
+  el('mplay').textContent = mvPlaying ? '■ とめる' : (mvDone ? '↻ もういちど' : '▶ さいせい');
+}
+el('mplay').addEventListener('click',()=>{ mvPlaying?stopMovie():playMovie(); });
+el('mprev').addEventListener('click',()=>{ stopMovie(); mvDone=false; if(mvI>0) showScene(mvI-1); });
+el('mnext').addEventListener('click',()=>{ stopMovie(); mvDone=false; if(mvI<MV.chapters.length-1) showScene(mvI+1); });
 
 /* 出題 */
 function render(){
