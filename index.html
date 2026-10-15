@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>水をひらいた人々　那須疏水｜4年社会</title>
+<title>原野に水を引く｜4年社会</title>
 <style>
   :root{
     --ai:#1b4a68; --ai2:#0f374e; --syu:#d6392c; --kin:#e0a52c; --sumi:#2b2b2b;
@@ -139,7 +139,7 @@
     font-size:1.05rem; display:flex; align-items:center; justify-content:center; flex:0 0 auto;
   }
   .place{font-size:.85rem; font-weight:400; color:#fff; background:#6f93a8; border-radius:999px; padding:.1rem .7rem; margin-left:auto;}
-  .ex .body{flex:1 1 auto; min-height:0; overflow-y:auto; font-size:1.12rem; line-height:2;}
+  .ex .body{flex:1 1 auto; min-height:0; overflow-y:auto; font-size:1.42rem; line-height:2.05;}
   .ex .body p + p{margin-top:.55rem;}
   .ex .body em{font-style:normal; color:var(--syu); font-weight:700;}
 
@@ -453,13 +453,37 @@
     .ask{display:none;}
     .tabs{margin-left:0;}
   }
+  /* ── 説明モード：上に大きく表示／下にカードを1列 ── */
+  .viewer{display:none;}
+  main.explain:not(.solo){grid-template-rows:minmax(0,1fr) auto;}
+  main.explain:not(.solo) .viewer{
+    grid-column:1; grid-row:1; display:flex; flex-direction:column; min-height:0;
+    background:var(--paper); border-radius:.9rem; padding:.55rem;
+    box-shadow:0 .15rem .5rem rgba(27,74,104,.14);
+  }
+  main.explain:not(.solo) .board{grid-column:1; grid-row:2; height:clamp(7.5rem,23vh,13rem);
+    grid-template-columns:repeat(var(--n,5),minmax(0,1fr)); grid-template-rows:minmax(0,1fr);}
+  main.explain:not(.solo) .board .card{grid-column:auto;}
+  main.explain:not(.solo) .board .card .cap{font-size:.95rem; padding:.15rem .2rem .2rem;}
+  main.explain:not(.solo) .board .badge{width:1.5rem; height:1.5rem; font-size:.8rem;}
+  main.explain:not(.solo) .panel{grid-column:2; grid-row:1 / 3;}
+  .viewer .vimg{flex:1 1 auto; min-height:0; width:100%; object-fit:contain; display:block;
+    background:#f7f3ea; border-radius:.6rem; cursor:zoom-in; animation:vfade .25s ease-out;}
+  .viewer .vcap{flex:0 0 auto; text-align:center; font-size:1.3rem; font-weight:700; color:var(--ai);
+    padding:.35rem .3rem .1rem; line-height:1.3;}
+  .viewer .vnone{margin:auto; text-align:center; font-size:1.2rem; line-height:2.2; color:#5c7b8d;}
+  @keyframes vfade{from{opacity:0;} to{opacity:1;}}
+  @media (max-aspect-ratio:1/1){
+    main.explain:not(.solo){grid-template-columns:1fr; grid-template-rows:minmax(0,1fr) auto minmax(0,.75fr);}
+    main.explain:not(.solo) .panel{grid-column:1; grid-row:3;}
+  }
 </style>
 </head>
 <body>
 
 <div class="bar1">
   <span class="grade">4年 社会</span>
-  <h1><ruby>水<rt>みず</rt></ruby>をひらいた<ruby>人々<rt>ひとびと</rt></ruby>　〜<ruby>那須疏水<rt>なすそすい</rt></ruby>〜</h1>
+  <h1><ruby>原野<rt>げんや</rt></ruby>に<ruby>水<rt>みず</rt></ruby>を<ruby>引<rt>ひ</rt></ruby>く</h1>
 </div>
 <div class="bar2">
   <p class="ask" id="ask"></p>
@@ -471,6 +495,7 @@
 </div>
 
 <main>
+  <section class="viewer" id="viewer"></section>
   <section class="board" id="board"></section>
 
   <section class="panel">
@@ -1672,12 +1697,13 @@ function drawBoard(cards){
   }).join('');
   board.classList.toggle('n5',cards.length===5);
   board.classList.toggle('n6',cards.length===6);
+  board.style.setProperty('--n',cards.length);
 }
 function loadSection(){
   const S=SECTIONS[sec];
   el('ask').innerHTML=S.ask;
   document.querySelector('main').classList.toggle('solo',!!S.media);
-  if(S.media){ showMovieSection(S); return; }   /* しりょうタブ */
+  if(S.media){ document.querySelector('main').classList.remove('explain'); showMovieSection(S); return; }   /* しりょうタブ */
   stopMovie(); vMovie.classList.remove('on');
   el('hint').innerHTML=S.hint;
   drawBoard(S.cards);
@@ -1701,7 +1727,8 @@ function applyMode(){
   el('vExplain').classList.toggle('on',mode==='explain');
   vQuiz.classList.toggle('on',mode==='quiz');
   clearCards();
-  if(mode==='explain'){ el('ex').classList.remove('on'); el('hint').style.display=''; board.classList.remove('locked'); }
+  document.querySelector('main').classList.toggle('explain',mode==='explain');
+  if(mode==='explain'){ el('ex').classList.remove('on'); el('hint').style.display=''; board.classList.remove('locked'); showBig(null); }
   else start();
 }
 
@@ -1742,9 +1769,16 @@ function closeZoom(){ zoom.classList.remove('on'); }
 zoom.addEventListener('click',closeZoom);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeZoom(); });
 
+function showBig(d){
+  const v=el('viewer');
+  if(!d){ v.innerHTML='<p class="vnone">'+R('下','した')+'のカードをクリックすると、<br>ここに'+R('大','おお')+'きく'+R('出','で')+'ます。</p>'; return; }
+  if(!d.img){ v.innerHTML='<p class="vnone">'+(d.head||d.cap||'')+'</p>'; return; }
+  v.innerHTML='<img class="vimg" src="'+d.img+'" alt=""><p class="vcap">'+(d.cap||d.head||'')+'</p>';
+  v.querySelector('.vimg').addEventListener('click',()=>openZoom(d));
+}
 function showExplain(k){
   const d=CURCARDS.find(x=>x.k===k);
-  openZoom(d);
+  showBig(d);
   [...board.children].forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.k===k)));
   el('hint').style.display='none';
   el('ex').classList.add('on');
